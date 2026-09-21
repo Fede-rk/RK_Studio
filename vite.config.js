@@ -13,6 +13,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         filmlab: resolve(__dirname, 'filmlab/index.html'),
         comparador: resolve(__dirname, 'comparador/index.html'),
+        paleta: resolve(__dirname, 'paleta/index.html'),
       },
     },
   },
