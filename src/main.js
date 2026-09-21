@@ -12,10 +12,14 @@ let exifData      = null;
 let currentFormat = '4:5';
 
 const pan = { x: 0.5, y: 0.5 };
+let zoom = 1.0;
 let isPanMode = false;
 let isDragging = false;
 const dragStart = { x: 0, y: 0 };
 const panStart  = { x: 0.5, y: 0.5 };
+let isPinching  = false;
+let pinchStartDist = 0;
+let pinchStartZoom = 1.0;
 
 const previewArea   = document.getElementById('preview-area');
 const frameContainer= document.getElementById('frame-container');
@@ -35,6 +39,15 @@ const presetRail    = document.getElementById('preset-rail');
 const formatBtns    = document.querySelectorAll('.fmt-btn');
 const inputDrop     = document.getElementById('file-input-drop');
 const inputReplace  = document.getElementById('file-input-replace');
+
+// Reframe toolbar elements
+const reframeBar       = document.getElementById('reframe-bar');
+const zoomSlider       = document.getElementById('zoom-slider');
+const zoomInBtn        = document.getElementById('zoom-in-btn');
+const zoomOutBtn       = document.getElementById('zoom-out-btn');
+const zoomLabel        = document.getElementById('zoom-label');
+const reframeCenterBtn = document.getElementById('reframe-center-btn');
+const reframeDoneBtn   = document.getElementById('reframe-done-btn');
 
 let renderer = null;
 
@@ -70,6 +83,14 @@ buildPresetRail(presetRail, PRESETS, (preset) => {
 
 let currentMetrics = { fw: 0, fh: 0, cw: 0, ch: 0, overflowX: 0, overflowY: 0 };
 
+function setZoom(val) {
+    zoom = Math.max(1.0, Math.min(3.5, Number(val) || 1.0));
+    zoom = Math.round(zoom * 100) / 100;
+    if (zoomSlider) zoomSlider.value = zoom;
+    if (zoomLabel) zoomLabel.textContent = `${zoom.toFixed(1)}×`;
+    updateFrameAndCanvas();
+}
+
 function updateFrameAndCanvas() {
     if (!renderer || !renderer.canvas.width) return;
 
@@ -100,14 +121,17 @@ function updateFrameAndCanvas() {
     const srcH = renderer.canvas.height;
     const srcRatio = srcW / srcH;
 
-    let cw, ch;
+    let baseCw, baseCh;
     if (srcRatio > dstRatio) {
-        ch = fh;
-        cw = Math.round(ch * srcRatio);
+        baseCh = fh;
+        baseCw = Math.round(baseCh * srcRatio);
     } else {
-        cw = fw;
-        ch = Math.round(cw / srcRatio);
+        baseCw = fw;
+        baseCh = Math.round(baseCw / srcRatio);
     }
+
+    const cw = Math.round(baseCw * zoom);
+    const ch = Math.round(baseCh * zoom);
 
     const overflowX = Math.max(0, cw - fw);
     const overflowY = Math.max(0, ch - fh);
@@ -135,15 +159,24 @@ function togglePanMode(force) {
         frameContainer.classList.add('panning');
         cropGrid.classList.remove('hidden');
         centerBtn.classList.add('btn-primary');
-        compareBadge.classList.add('badge-active');
-        if (badgeText) badgeText.textContent = '✦ Arrastra para encuadrar · Doble clic para fijar';
+        compareBadge.classList.add('hidden');
+        if (reframeBar) reframeBar.classList.remove('hidden');
     } else {
         frameContainer.classList.remove('panning', 'is-dragging');
         cropGrid.classList.add('hidden');
         centerBtn.classList.remove('btn-primary');
-        compareBadge.classList.remove('badge-active');
-        if (badgeText) badgeText.textContent = 'Doble clic: encuadrar · Mantener: original';
+        if (reframeBar) reframeBar.classList.add('hidden');
+        compareBadge.classList.remove('hidden', 'badge-active');
+        if (badgeText) badgeText.textContent = 'Doble clic: centrar / reencuadrar · Mantener: original';
     }
+}
+
+function handleDoubleAction() {
+    if (!renderer || !renderer.canvas.width) return;
+    pan.x = 0.5;
+    pan.y = 0.5;
+    togglePanMode(true);
+    updateCanvasPosition();
 }
 
 async function handleFile(file) {
@@ -154,12 +187,14 @@ async function handleFile(file) {
         exifData = result.exifData;
         pan.x = 0.5;
         pan.y = 0.5;
+        setZoom(1.0);
         renderer.loadImage(result.img);
         dropOverlay.classList.add('hidden');
         frameContainer.classList.remove('hidden');
         exportBtn.disabled = false;
         if (headerExportBtn) headerExportBtn.disabled = false;
         compareBadge.classList.remove('hidden');
+        togglePanMode(false);
         updateFrameAndCanvas();
     } catch (err) {
         alert('Error cargando imagen: ' + err.message);
@@ -175,8 +210,17 @@ setupDropzone({ overlayEl: dropOverlay, inputDrop, inputReplace, onFile: handleF
 
 frameContainer.addEventListener('dblclick', (e) => {
     e.preventDefault();
-    togglePanMode();
+    handleDoubleAction();
 });
+
+// Wheel zoom
+frameContainer.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    if (!renderer || !renderer.canvas.width) return;
+    if (!isPanMode) togglePanMode(true);
+    const step = e.deltaY < 0 ? 0.1 : -0.1;
+    setZoom(zoom + step);
+}, { passive: false });
 
 frameContainer.addEventListener('mousedown', (e) => {
     if (e.button !== 0) return;
@@ -216,11 +260,15 @@ window.addEventListener('mouseup', () => {
     }
 });
 
+// Touch and pinch-to-zoom
+let lastTouchEnd = 0;
+
 frameContainer.addEventListener('touchstart', (e) => {
     if (e.touches.length === 1) {
         const touch = e.touches[0];
         if (isPanMode) {
             isDragging = true;
+            frameContainer.classList.add('is-dragging');
             dragStart.x = touch.clientX;
             dragStart.y = touch.clientY;
             panStart.x = pan.x;
@@ -228,11 +276,27 @@ frameContainer.addEventListener('touchstart', (e) => {
         } else {
             if (renderer) renderer.setShowOriginal(true);
         }
+    } else if (e.touches.length === 2) {
+        isDragging = false;
+        isPinching = true;
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        pinchStartDist = Math.hypot(dx, dy);
+        pinchStartZoom = zoom;
+        if (!isPanMode) togglePanMode(true);
     }
 }, { passive: true });
 
 window.addEventListener('touchmove', (e) => {
-    if (isDragging && isPanMode && e.touches.length === 1) {
+    if (isPinching && e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(dx, dy);
+        if (pinchStartDist > 0) {
+            const scale = dist / pinchStartDist;
+            setZoom(pinchStartZoom * scale);
+        }
+    } else if (isDragging && isPanMode && e.touches.length === 1) {
         const touch = e.touches[0];
         const deltaX = touch.clientX - dragStart.x;
         const deltaY = touch.clientY - dragStart.y;
@@ -246,10 +310,57 @@ window.addEventListener('touchmove', (e) => {
     }
 }, { passive: true });
 
-window.addEventListener('touchend', () => {
-    if (isDragging) isDragging = false;
-    if (!isPanMode && renderer) renderer.setShowOriginal(false);
+window.addEventListener('touchend', (e) => {
+    const now = Date.now();
+    if (now - lastTouchEnd < 320 && e.touches.length === 0 && !isPinching) {
+        handleDoubleAction();
+    }
+    lastTouchEnd = now;
+
+    if (e.touches.length < 2) {
+        isPinching = false;
+    }
+    if (e.touches.length === 0) {
+        if (isDragging) {
+            isDragging = false;
+            frameContainer.classList.remove('is-dragging');
+        }
+        if (!isPanMode && renderer) renderer.setShowOriginal(false);
+    }
 });
+
+// Reframe toolbar actions
+if (zoomSlider) {
+    zoomSlider.addEventListener('input', (e) => {
+        setZoom(parseFloat(e.target.value));
+    });
+}
+if (zoomInBtn) {
+    zoomInBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setZoom(zoom + 0.15);
+    });
+}
+if (zoomOutBtn) {
+    zoomOutBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setZoom(zoom - 0.15);
+    });
+}
+if (reframeCenterBtn) {
+    reframeCenterBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        pan.x = 0.5;
+        pan.y = 0.5;
+        updateCanvasPosition();
+    });
+}
+if (reframeDoneBtn) {
+    reframeDoneBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        togglePanMode(false);
+    });
+}
 
 if (rotateBtn) {
     rotateBtn.addEventListener('click', () => {
@@ -257,6 +368,7 @@ if (rotateBtn) {
         renderer.rotate(90);
         pan.x = 0.5;
         pan.y = 0.5;
+        setZoom(1.0);
         updateFrameAndCanvas();
     });
 }
@@ -276,6 +388,7 @@ formatBtns.forEach(btn => {
         currentFormat = btn.dataset.format;
         pan.x = 0.5;
         pan.y = 0.5;
+        setZoom(1.0);
         updateFrameAndCanvas();
     });
 });
@@ -291,7 +404,7 @@ async function triggerExport() {
     exportBtn.textContent = 'Exportando...';
     if (headerExportBtn) headerExportBtn.textContent = 'Exportando...';
     try {
-        await exportImage(renderer, currentFormat, exifData, pan);
+        await exportImage(renderer, currentFormat, exifData, pan, zoom);
     } catch (e) {
         alert('Error al exportar: ' + e.message);
     } finally {
@@ -311,6 +424,7 @@ resetBtn.addEventListener('click', () => {
     controls.loadParams(DEFAULT_PARAMS);
     pan.x = 0.5;
     pan.y = 0.5;
+    setZoom(1.0);
     updateCanvasPosition();
     togglePanMode(false);
     document.querySelectorAll('.preset-card.active').forEach(el => el.classList.remove('active'));

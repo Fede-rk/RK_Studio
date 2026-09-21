@@ -53,7 +53,7 @@ async function injectExif(jpegBlob, exifData) {
     }
 }
 
-export async function exportImage(renderer, formatKey, exifData, pan = { x: 0.5, y: 0.5 }) {
+export async function exportImage(renderer, formatKey, exifData, pan = { x: 0.5, y: 0.5 }, zoom = 1.0) {
     const fmt = FORMATS[formatKey] || FORMATS['4:5'];
     const { w: dstW, h: dstH } = fmt;
 
@@ -62,24 +62,28 @@ export async function exportImage(renderer, formatKey, exifData, pan = { x: 0.5,
 
     const srcRatio = srcW / srcH;
     const dstRatio = dstW / dstH;
-    let cropX, cropY, cropW, cropH;
 
     const px = typeof pan?.x === 'number' ? Math.max(0, Math.min(1, pan.x)) : 0.5;
     const py = typeof pan?.y === 'number' ? Math.max(0, Math.min(1, pan.y)) : 0.5;
+    const z  = typeof zoom === 'number' ? Math.max(1.0, Math.min(4.0, zoom)) : 1.0;
 
+    let baseCropW, baseCropH;
     if (srcRatio > dstRatio) {
-        cropH = srcH;
-        cropW = Math.round(srcH * dstRatio);
-        const maxOffset = srcW - cropW;
-        cropX = Math.round(maxOffset * px);
-        cropY = 0;
+        baseCropH = srcH;
+        baseCropW = Math.round(srcH * dstRatio);
     } else {
-        cropW = srcW;
-        cropH = Math.round(srcW / dstRatio);
-        cropX = 0;
-        const maxOffset = srcH - cropH;
-        cropY = Math.round(maxOffset * py);
+        baseCropW = srcW;
+        baseCropH = Math.round(baseCropW / dstRatio);
     }
+
+    const cropW = Math.max(1, Math.round(baseCropW / z));
+    const cropH = Math.max(1, Math.round(baseCropH / z));
+
+    const maxOffsetX = Math.max(0, srcW - cropW);
+    const maxOffsetY = Math.max(0, srcH - cropH);
+
+    const cropX = Math.round(maxOffsetX * px);
+    const cropY = Math.round(maxOffsetY * py);
 
     const exportCanvas = document.createElement('canvas');
     exportCanvas.width  = dstW;

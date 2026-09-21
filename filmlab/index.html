@@ -65,9 +65,28 @@
         </div>
       </div>
 
+      <!-- Floating reframe toolbar -->
+      <div id="reframe-bar" class="reframe-bar hidden" role="toolbar" aria-label="Controles de encuadre y zoom">
+        <div class="reframe-group">
+          <button id="zoom-out-btn" class="reframe-btn" type="button" title="Alejar / Reducir zoom">−</button>
+          <input type="range" id="zoom-slider" class="reframe-slider" min="1" max="3" step="0.02" value="1" title="Nivel de zoom">
+          <button id="zoom-in-btn" class="reframe-btn" type="button" title="Acercar / Aumentar zoom">+</button>
+          <span id="zoom-label" class="reframe-val">1.0×</span>
+        </div>
+        <div class="reframe-divider"></div>
+        <div class="reframe-group">
+          <button id="reframe-center-btn" class="reframe-pill-btn" type="button" title="Centrar imagen en el marco">
+            <span>⌖ Centrar</span>
+          </button>
+          <button id="reframe-done-btn" class="reframe-pill-btn reframe-done" type="button" title="Fijar encuadre">
+            <span>Listo ✓</span>
+          </button>
+        </div>
+      </div>
+
       <!-- Compare / Framing badge -->
       <div id="compare-badge" class="compare-badge hidden">
-        <span id="badge-text">Doble clic: encuadrar · Mantener presionado: original</span>
+        <span id="badge-text">Doble clic: centrar / reencuadrar · Mantener presionado: original</span>
       </div>
 
       <!-- Processing indicator -->

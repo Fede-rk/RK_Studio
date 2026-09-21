@@ -241,6 +241,136 @@ body {
     background: rgba(20, 20, 20, 0.95);
 }
 
+/* Reframe Floating Toolbar */
+.reframe-bar {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(18, 18, 20, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(0, 0, 0, 0.4);
+    border-radius: 30px;
+    padding: 6px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 12;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    user-select: none;
+    max-width: calc(100% - 32px);
+    box-sizing: border-box;
+}
+.reframe-bar.hidden {
+    display: none !important;
+}
+.reframe-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.reframe-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--text);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    line-height: 1;
+    transition: background 0.15s, transform 0.1s;
+}
+.reframe-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+.reframe-btn:active {
+    transform: scale(0.92);
+}
+.reframe-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+}
+.reframe-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+.reframe-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+.reframe-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+}
+.reframe-val {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    min-width: 32px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+.reframe-divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.15);
+}
+.reframe-pill-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: background 0.15s, color 0.15s;
+}
+.reframe-pill-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+}
+.reframe-pill-btn:active {
+    transform: scale(0.96);
+}
+.reframe-pill-btn.reframe-done {
+    background: var(--accent);
+    color: #111;
+    border-color: var(--accent);
+    font-weight: 700;
+}
+.reframe-pill-btn.reframe-done:hover {
+    background: #f0b74b;
+    color: #000;
+}
+
 /* Processing spinner */
 .processing {
     position: absolute;
@@ -607,5 +737,26 @@ body {
     .bottom-right .btn {
         padding: 6px 10px;
         font-size: 11px;
+    }
+
+    .reframe-bar {
+        bottom: 60px;
+        padding: 5px 8px;
+        gap: 6px;
+        max-width: calc(100vw - 16px);
+    }
+    .reframe-slider {
+        width: 65px;
+    }
+    .reframe-pill-btn {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+    .reframe-val {
+        font-size: 10px;
+        min-width: 28px;
+    }
+    .compare-badge {
+        bottom: 60px;
     }
 }
