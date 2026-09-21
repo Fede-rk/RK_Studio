@@ -15,6 +15,10 @@
     </div>
     <div class="header-actions">
       <button id="reset-btn" class="btn btn-ghost btn-sm" title="Reiniciar todos los parámetros">↺ Reset</button>
+      <button id="header-export-btn" class="btn btn-primary btn-sm" disabled title="Exportar foto JPG">
+        <svg viewBox="0 0 20 20" fill="currentColor" width="13" height="13"><path d="M10 17a1 1 0 01-.707-.293l-3-3a1 1 0 011.414-1.414L9 13.586V7a1 1 0 112 0v6.586l1.293-1.293a1 1 0 011.414 1.414l-3 3A1 1 0 0110 17z"/><path d="M3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg>
+        Exportar JPG
+      </button>
     </div>
   </header>
 
@@ -86,19 +90,19 @@
     <div class="bottom-left">
       <label class="btn btn-ghost btn-sm" for="file-input-replace" title="Cargar otra foto">
         <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L11 6.414V13a1 1 0 11-2 0V6.414L7.707 7.707A1 1 0 016.293 6.293l3-3A1 1 0 0110 3z"/><path d="M3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg>
-        Cargar
+        <span class="btn-label-text">Cargar</span>
       </label>
       <input type="file" id="file-input-replace"
         accept=".jpg,.jpeg,.png,.webp,.tiff,.tif,.raw,.cr2,.cr3,.nef,.nrw,.arw,.sr2,.orf,.rw2,.dng,.raf,.rwl,.pef"
         hidden />
+
+      <button id="rotate-btn" class="btn btn-ghost btn-sm" title="Girar imagen 90° horario">
+        <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.047a1 1 0 011.885-.666A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566z" clip-rule="evenodd"/></svg>
+        <span class="btn-label-text">Girar 90°</span>
+      </button>
     </div>
 
     <div class="bottom-center">
-      <button id="rotate-btn" class="btn btn-ghost btn-sm" title="Girar imagen 90° horario">
-        <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.047a1 1 0 011.885-.666A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566z" clip-rule="evenodd"/></svg>
-        Girar 90°
-      </button>
-
       <div id="format-selector" class="format-selector" role="group" aria-label="Formato de exportación">
         <button class="fmt-btn active" data-format="4:5" title="Portrait Instagram 1080×1350">4:5</button>
         <button class="fmt-btn" data-format="1:1" title="Cuadrado 1080×1080">1:1</button>
@@ -107,14 +111,16 @@
       </div>
 
       <button id="center-btn" class="btn btn-ghost btn-sm" title="Centrar imagen en el marco">
-        ⌖ Centrar
+        <span class="btn-label-text">⌖ Centrar</span>
+        <span class="btn-icon-only">⌖</span>
       </button>
     </div>
 
     <div class="bottom-right">
-      <button id="export-btn" class="btn btn-primary btn-sm" disabled>
+      <button id="export-btn" class="btn btn-primary btn-sm" disabled title="Exportar foto JPG">
         <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M10 17a1 1 0 01-.707-.293l-3-3a1 1 0 011.414-1.414L9 13.586V7a1 1 0 112 0v6.586l1.293-1.293a1 1 0 011.414 1.414l-3 3A1 1 0 0110 17z"/><path d="M3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg>
-        Exportar JPG
+        <span class="btn-label-text">Exportar JPG</span>
+        <span class="btn-icon-only">JPG</span>
       </button>
     </div>
   </footer>

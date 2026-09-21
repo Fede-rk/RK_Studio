@@ -469,6 +469,9 @@ body {
 
 .btn-sm { padding: 5px 10px; font-size: 11px; }
 
+.btn-icon-only { display: none; }
+.btn-label-text { display: inline; }
+
 .hidden { display: none !important; }
 
 /* ---- SCROLLBARS ---- */
@@ -492,7 +495,9 @@ body {
     #header {
         flex-shrink: 0;
         height: var(--header-h);
+        padding: 0 10px;
     }
+    #header .logo { font-size: 13px; }
 
     #app {
         flex: 1;
@@ -500,6 +505,7 @@ body {
         flex-direction: column;
         overflow: hidden;
         min-height: 0;
+        padding-bottom: 54px; /* Room for permanently fixed bottom bar */
     }
 
     #preview-area {
@@ -548,23 +554,58 @@ body {
         flex-shrink: 0;
     }
 
+    /* Fixed bottom bar: always in view at bottom of mobile screen */
     #bottom-bar {
-        flex-shrink: 0;
-        height: var(--footer-h);
-        overflow-x: auto;
-        overflow-y: hidden;
-        justify-content: flex-start;
-        padding: 0 10px;
-        gap: 8px;
-        scrollbar-width: none;
-        -webkit-overflow-scrolling: touch;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 52px;
+        background: #111111;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 8px;
+        gap: 4px;
+        z-index: 100;
+        overflow: visible;
     }
-    #bottom-bar::-webkit-scrollbar { display: none; }
 
     .bottom-left, .bottom-center, .bottom-right {
+        display: flex;
+        align-items: center;
+        gap: 4px;
         flex-shrink: 0;
     }
 
-    .format-selector { flex-shrink: 0; }
-    .fmt-btn { padding: 5px 8px; font-size: 11px; }
+    .bottom-left .btn, .bottom-center .btn {
+        padding: 6px 7px;
+    }
+
+    /* Hide redundant long text on small screens so all buttons fit side-by-side */
+    .bottom-left .btn-label-text, 
+    #center-btn .btn-label-text {
+        display: none;
+    }
+    #center-btn .btn-icon-only {
+        display: inline;
+        font-size: 13px;
+    }
+
+    .format-selector {
+        display: flex;
+        gap: 2px;
+        padding: 2px;
+        flex-shrink: 0;
+    }
+    .fmt-btn {
+        padding: 5px 6px;
+        font-size: 10px;
+    }
+
+    .bottom-right .btn {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
 }

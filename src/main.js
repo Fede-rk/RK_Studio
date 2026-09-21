@@ -26,6 +26,7 @@ const compareBadge  = document.getElementById('compare-badge');
 const badgeText     = document.getElementById('badge-text');
 const processingEl  = document.getElementById('processing');
 const exportBtn     = document.getElementById('export-btn');
+const headerExportBtn = document.getElementById('header-export-btn');
 const resetBtn      = document.getElementById('reset-btn');
 const rotateBtn     = document.getElementById('rotate-btn');
 const centerBtn     = document.getElementById('center-btn');
@@ -157,6 +158,7 @@ async function handleFile(file) {
         dropOverlay.classList.add('hidden');
         frameContainer.classList.remove('hidden');
         exportBtn.disabled = false;
+        if (headerExportBtn) headerExportBtn.disabled = false;
         compareBadge.classList.remove('hidden');
         updateFrameAndCanvas();
     } catch (err) {
@@ -282,19 +284,26 @@ window.addEventListener('resize', () => {
     updateFrameAndCanvas();
 });
 
-exportBtn.addEventListener('click', async () => {
+async function triggerExport() {
     if (!renderer) return;
-    exportBtn.disabled   = true;
+    exportBtn.disabled = true;
+    if (headerExportBtn) headerExportBtn.disabled = true;
     exportBtn.textContent = 'Exportando...';
+    if (headerExportBtn) headerExportBtn.textContent = 'Exportando...';
     try {
         await exportImage(renderer, currentFormat, exifData, pan);
     } catch (e) {
         alert('Error al exportar: ' + e.message);
     } finally {
-        exportBtn.disabled   = false;
-        exportBtn.innerHTML  = '<svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M10 17a1 1 0 01-.707-.293l-3-3a1 1 0 011.414-1.414L9 13.586V7a1 1 0 112 0v6.586l1.293-1.293a1 1 0 011.414 1.414l-3 3A1 1 0 0110 17z"/><path d="M3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> Exportar JPG';
+        exportBtn.disabled = false;
+        if (headerExportBtn) headerExportBtn.disabled = false;
+        exportBtn.innerHTML = '<svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M10 17a1 1 0 01-.707-.293l-3-3a1 1 0 011.414-1.414L9 13.586V7a1 1 0 112 0v6.586l1.293-1.293a1 1 0 011.414 1.414l-3 3A1 1 0 0110 17z"/><path d="M3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> <span class="btn-label-text">Exportar JPG</span><span class="btn-icon-only">JPG</span>';
+        if (headerExportBtn) headerExportBtn.innerHTML = '<svg viewBox="0 0 20 20" fill="currentColor" width="13" height="13"><path d="M10 17a1 1 0 01-.707-.293l-3-3a1 1 0 011.414-1.414L9 13.586V7a1 1 0 112 0v6.586l1.293-1.293a1 1 0 011.414 1.414l-3 3A1 1 0 0110 17z"/><path d="M3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> Exportar JPG';
     }
-});
+}
+
+exportBtn.addEventListener('click', triggerExport);
+if (headerExportBtn) headerExportBtn.addEventListener('click', triggerExport);
 
 resetBtn.addEventListener('click', () => {
     if (!renderer) return;

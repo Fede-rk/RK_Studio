@@ -238,7 +238,7 @@ async function exportReelVideo() {
 
     btnExport.disabled = true;
     btnAnimate.disabled = true;
-    btnExportText.textContent = "Preparando Reel HD...";
+    btnExportText.textContent = "Preparando video...";
     btnExportIcon.innerHTML = `<circle class="spinner" cx="10" cy="10" r="7" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="32" stroke-dashoffset="12"/>`;
 
     try {
@@ -331,7 +331,7 @@ async function exportReelVideo() {
                 const a = document.createElement('a');
                 a.href = url;
                 const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
-                a.download = `rk_reel_antes_despues_${Date.now()}.${ext}`;
+                a.download = `rk_comparador_${Date.now()}.${ext}`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -501,7 +501,7 @@ async function exportReelVideo() {
                 currentFrame++;
 
                 const pct = Math.round((currentFrame / totalFrames) * 100);
-                btnExportText.textContent = `Generando Reel HD... ${pct}%`;
+                btnExportText.textContent = `Generando video... ${pct}%`;
             }, frameTimeMs);
         });
 
@@ -514,7 +514,7 @@ async function exportReelVideo() {
         isExporting = false;
         btnExport.disabled = false;
         btnAnimate.disabled = false;
-        btnExportText.textContent = "Descargar Reel (1080×1920 · 30 FPS)";
+        btnExportText.textContent = "Descargar Video Comparativo (30 FPS)";
         btnExportIcon.innerHTML = `<path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>`;
     }
 }
