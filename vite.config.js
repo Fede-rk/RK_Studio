@@ -6,9 +6,9 @@ export default defineConfig({
     sourcemap: false,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html'),
-        filmlab: resolve(__dirname, 'filmlab/index.html'),
-        comparador: resolve(__dirname, 'comparador/index.html'),
+        main: resolve(import.meta.dirname, 'index.html'),
+        filmlab: resolve(import.meta.dirname, 'filmlab/index.html'),
+        comparador: resolve(import.meta.dirname, 'comparador/index.html'),
       },
     },
   },
