@@ -1,5 +1,5 @@
 // hiperfocal/hiperfocal.js
-// Lógica de cálculo óptico y experiencia guiada para RK Hiperfocal
+// Lógica de cálculo óptico, submenús y experiencia guiada para RK Hiperfocal
 
 import { SENSOR_TYPES, POPULAR_CAMERAS } from './cameras.js';
 
@@ -24,7 +24,7 @@ const MODE_PRESETS = {
     strictCoc: false,
     subtitle: 'Máxima nitidez desde el primer plano hasta el horizonte',
     guide: `
-      <p><strong>🎯 La Regla de Oro del Paisajista:</strong> Nunca enfoques al infinito ($\infty$) en un paisaje. Si enfocas al horizonte, desperdicias la mitad de la profundidad de campo útil hacia atrás.</p>
+      <p><strong>🎯 La Regla de Oro del Paisajista:</strong> Nunca enfoques al infinito (∞) en un paisaje con suelo. Si enfocas al horizonte, desperdicias la mitad de la profundidad de campo útil hacia atrás.</p>
       <p>Enfocando a la <strong>distancia hiperfocal calculada</strong>, tus flores o rocas cercanas quedarán nítidas y las montañas del horizonte no perderán nitidez.</p>
       <ul>
         <li><strong>Apertura recomendada:</strong> Mantente entre <strong>f/8 y f/11</strong>. Diafragmas más cerrados como f/16 o f/22 introducen <em>difracción óptica</em>, que resta nitidez general.</li>
@@ -33,18 +33,19 @@ const MODE_PRESETS = {
     `
   },
   astro: {
-    name: 'Astrofotografía & Luna',
+    name: 'Paisaje Nocturno (con suelo)',
     icon: '🌌',
     focal: 16,
     aperture: 2.8,
     strictCoc: true,
-    subtitle: 'Paisajes nocturnos con cielo estrellado y suelo enfocado',
+    subtitle: 'Vía Láctea o cielo estrellado con rocas/árboles en el suelo',
     guide: `
-      <p><strong>⚠️ Aclaración clave para novatos (¿Fotografiar la Luna o Estrellas solas?):</strong></p>
+      <p><strong>🌌 Paisaje Nocturno (Cielo + Suelo):</strong> Estás componiendo con la Vía Láctea o estrellas de fondo y un elemento en tierra (roca, carpa, árbol).</p>
       <ul>
-        <li><strong>Si solo fotografías la Luna o constelaciones en el cielo:</strong> <strong>¡NO uses la hiperfocal!</strong> La Luna está a 384.000 km (en el infinito absoluto). Apunta directo a la Luna, activa el zoom digital en pantalla al 100% y ajusta el foco manual hasta ver los cráteres nítidos.</li>
-        <li><strong>Si fotografías Paisaje Nocturno (Vía Láctea con suelo/árboles/rocas):</strong> <strong>Aquí SÍ es fundamental la hiperfocal</strong>. Usa tu diafragma más luminoso (f/1.4 a f/2.8) y enfoca a la distancia indicada para que la roca del primer plano esté nítida y las estrellas no se vuelvan borrosas.</li>
-        <li><strong>Ajuste de alta exigencia:</strong> Hemos activado el modo de <em>Alta Exigencia</em> para que las estrellas se mantengan como puntos finos sin halos.</li>
+        <li><strong>Por qué usar la hiperfocal:</strong> Si enfocas a las estrellas, el primer plano saldrá desenfocado. Si enfocas a la hiperfocal, <em>ambos</em> saldrán nítidos.</li>
+        <li><strong>Apertura luminosa:</strong> Usa tu diafragma más abierto (f/1.4, f/2 o f/2.8) para captar la máxima luz de las estrellas.</li>
+        <li><strong>Criterio estricto activo:</strong> Se ha seleccionado el criterio de nitidez <em>Astro / Pixel 100%</em> para que las estrellas no tengan halos y se vean puntuales.</li>
+        <li><em>¿Querés sacarle solo a la Luna o a un planeta sin suelo?</em> Hacé clic en el botón superior <strong>"🌕 Cambiar a Solo Luna / Espacio"</strong>.</li>
       </ul>
     `
   },
@@ -56,7 +57,7 @@ const MODE_PRESETS = {
     strictCoc: false,
     subtitle: 'Disparo instantáneo sin retardo de autofocus ("Zone Focusing")',
     guide: `
-      <p><strong>⚡ Enfoque por Zonas (Zone Focusing):</strong> Los fotógrafos de calle más rápidos no usan autoenfoque; calibran su lente a la hiperfocal antes de empezar a caminar.</p>
+      <p><strong>⚡ Enfoque por Zonas (Zone Focusing):</strong> Los fotógrafos de calle más rápidos no esperan al autoenfoque; calibran su lente a la hiperfocal antes de empezar a caminar.</p>
       <ul>
         <li><strong>¿Cómo funciona?</strong> Con tu lente ajustado a la hiperfocal, todo sujeto que pase dentro de la <em>Zona Nítida</em> saldrá enfocado de forma instantánea al apretar el disparador.</li>
         <li><strong>Focales reinas:</strong> 28mm o 35mm en f/8 te darán una zona de confort enorme (aproximadamente desde 1.5 a 2 metros hasta el infinito).</li>
@@ -70,17 +71,25 @@ const MODE_PRESETS = {
     focal: 24,
     aperture: 8.0,
     strictCoc: false,
-    subtitle: 'Control total de sensor, focal y diafragma para cualquier disciplina',
+    subtitle: 'Control total de sensor, focal de 8mm a 600mm y diafragma',
     guide: `
-      <p><strong>Configuración manual completa:</strong> Ajusta libremente cualquier sensor, distancia focal milimétrica y número f para calcular la hiperfocal exacta y explorar la profundidad de campo geométrica.</p>
+      <p><strong>Configuración manual completa:</strong> Ajusta libremente cualquier sensor, distancia focal milimétrica (incluso teleobjetivos de 250mm a 600mm) y número f para calcular la hiperfocal exacta y explorar la profundidad de campo geométrica.</p>
     `
   }
 };
 
-// DOM Elements
+// DOM Screens
 const screenDisciplines   = document.getElementById('screen-disciplines');
+const screenAstroSub      = document.getElementById('screen-astro-sub');
+const screenMoonGuide     = document.getElementById('screen-moon-guide');
 const screenCalculator    = document.getElementById('screen-calculator');
+
+// Banner & Navigation
 const btnChangeMode       = document.getElementById('btn-change-mode');
+const btnBackDisciplines  = document.getElementById('btn-back-disciplines');
+const btnSwitchToNightLand= document.getElementById('btn-switch-to-night-landscape');
+const btnMoonChangeMode   = document.getElementById('btn-moon-change-mode');
+const btnSwitchMoon       = document.getElementById('btn-switch-moon');
 const modeIconEl          = document.getElementById('mode-icon');
 const modeNameEl          = document.getElementById('mode-name');
 const modeHintEl          = document.getElementById('mode-hint');
@@ -95,8 +104,8 @@ const selectedCamMeta     = document.getElementById('selected-camera-meta');
 const cocPills            = document.querySelectorAll('.coc-pill');
 
 // Focal & Aperture controls
+const focalInput          = document.getElementById('focal-input');
 const focalSlider         = document.getElementById('focal-slider');
-const focalValBadge       = document.getElementById('focal-val-badge');
 const focalPresetBtns     = document.querySelectorAll('.focal-btn');
 const apertureSlider      = document.getElementById('aperture-slider');
 const apertureValBadge    = document.getElementById('aperture-val-badge');
@@ -127,19 +136,40 @@ const APERTURES = [1.2, 1.4, 1.8, 2.0, 2.8, 4.0, 5.6, 8.0, 11.0, 16.0, 22.0];
 // Initialize UI
 function init() {
   setupEventListeners();
-  // Check if URL or hash has a preselected mode
+
   const hash = window.location.hash.replace('#', '');
-  if (['landscape', 'astro', 'street', 'custom'].includes(hash)) {
+  if (hash === 'moon') {
+    showMoonGuideScreen();
+  } else if (['landscape', 'astro', 'street', 'custom'].includes(hash)) {
     selectMode(hash);
   } else {
-    // Show discipline selection by default
     showDisciplineScreen();
   }
 }
 
-function showDisciplineScreen() {
-  screenDisciplines.style.display = 'flex';
+// Navigation helpers
+function hideAllScreens() {
+  screenDisciplines.style.display = 'none';
+  screenAstroSub.classList.add('hidden');
+  screenMoonGuide.classList.add('hidden');
   screenCalculator.classList.add('hidden');
+}
+
+function showDisciplineScreen() {
+  hideAllScreens();
+  screenDisciplines.style.display = 'flex';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showAstroSubScreen() {
+  hideAllScreens();
+  screenAstroSub.classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showMoonGuideScreen() {
+  hideAllScreens();
+  screenMoonGuide.classList.remove('hidden');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -157,11 +187,18 @@ function selectMode(modeKey) {
   modeNameEl.textContent = preset.name;
   modeHintEl.textContent = preset.subtitle;
 
+  // If in Astro mode, show the button to switch to Moon guide
+  if (modeKey === 'astro') {
+    btnSwitchMoon.classList.remove('hidden');
+  } else {
+    btnSwitchMoon.classList.add('hidden');
+  }
+
   // Update guide content
   guideContentBox.innerHTML = preset.guide;
 
   // Switch to calculator view
-  screenDisciplines.style.display = 'none';
+  hideAllScreens();
   screenCalculator.classList.remove('hidden');
 
   // Sync inputs and calculate
@@ -173,8 +210,8 @@ function selectMode(modeKey) {
 // Sync controls to current state
 function syncControlsFromState() {
   // Focal
+  if (focalInput) focalInput.value = state.focalLength;
   focalSlider.value = state.focalLength;
-  focalValBadge.textContent = `${state.focalLength} mm`;
   focalPresetBtns.forEach(btn => {
     btn.classList.toggle('active', parseInt(btn.dataset.focal, 10) === state.focalLength);
   });
@@ -257,7 +294,6 @@ function recalculate() {
 
 // Update the Visual Depth of Field Bar / Ruler
 function updateDiagram(H_meters, near_meters, displayH, displayNear, unitLabel) {
-  // We represent the visual scale with near limit around ~32% and H around ~64%
   const blurPercent = 32;
   const focusPercent = 64;
 
@@ -275,11 +311,52 @@ function setupEventListeners() {
   document.querySelectorAll('.discipline-card').forEach(card => {
     card.addEventListener('click', () => {
       const mode = card.dataset.mode;
-      selectMode(mode);
+      if (mode === 'astro-prompt') {
+        // Show Astrophotography choice sub-screen
+        showAstroSubScreen();
+      } else if (mode) {
+        selectMode(mode);
+      }
     });
   });
 
-  // Change mode button
+  // Sub-menu Astro options
+  document.querySelectorAll('[data-astro-choice]').forEach(card => {
+    card.addEventListener('click', () => {
+      const choice = card.dataset.astroChoice;
+      if (choice === 'moon') {
+        showMoonGuideScreen();
+      } else {
+        selectMode('astro');
+      }
+    });
+  });
+
+  // Back to disciplines from astro sub-screen
+  if (btnBackDisciplines) {
+    btnBackDisciplines.addEventListener('click', () => {
+      showDisciplineScreen();
+    });
+  }
+
+  // Switch between Moon guide and Night Landscape calculator
+  if (btnSwitchToNightLand) {
+    btnSwitchToNightLand.addEventListener('click', () => {
+      selectMode('astro');
+    });
+  }
+  if (btnMoonChangeMode) {
+    btnMoonChangeMode.addEventListener('click', () => {
+      showDisciplineScreen();
+    });
+  }
+  if (btnSwitchMoon) {
+    btnSwitchMoon.addEventListener('click', () => {
+      showMoonGuideScreen();
+    });
+  }
+
+  // Change mode button from calculator
   if (btnChangeMode) {
     btnChangeMode.addEventListener('click', () => {
       showDisciplineScreen();
@@ -364,10 +441,25 @@ function setupEventListeners() {
     });
   });
 
-  // Focal slider
+  // Direct numeric focal length input
+  if (focalInput) {
+    focalInput.addEventListener('input', (e) => {
+      let val = parseInt(e.target.value, 10);
+      if (isNaN(val)) return;
+      val = Math.max(8, Math.min(800, val));
+      state.focalLength = val;
+      focalSlider.value = Math.min(600, val);
+      focalPresetBtns.forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.focal, 10) === state.focalLength);
+      });
+      recalculate();
+    });
+  }
+
+  // Focal slider (up to 600mm)
   focalSlider.addEventListener('input', (e) => {
     state.focalLength = parseInt(e.target.value, 10);
-    focalValBadge.textContent = `${state.focalLength} mm`;
+    if (focalInput) focalInput.value = state.focalLength;
     focalPresetBtns.forEach(btn => {
       btn.classList.toggle('active', parseInt(btn.dataset.focal, 10) === state.focalLength);
     });
@@ -378,8 +470,8 @@ function setupEventListeners() {
   focalPresetBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       state.focalLength = parseInt(btn.dataset.focal, 10);
-      focalSlider.value = state.focalLength;
-      focalValBadge.textContent = `${state.focalLength} mm`;
+      focalSlider.value = Math.min(600, state.focalLength);
+      if (focalInput) focalInput.value = state.focalLength;
       focalPresetBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       recalculate();

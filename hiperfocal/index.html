@@ -39,15 +39,15 @@
           <div class="discipline-action">Iniciar Paisaje →</div>
         </div>
 
-        <!-- 2. Astrofotografía & Luna -->
-        <div class="discipline-card" data-mode="astro">
+        <!-- 2. Astrofotografía & Noche -->
+        <div class="discipline-card" data-mode="astro-prompt">
           <div class="discipline-icon">🌌</div>
           <div class="discipline-title">Astrofotografía & Luna</div>
           <p class="discipline-desc">
-            Estrellas como puntos nítidos en el cielo nocturno y suelo enfocado. Incluye la guía clave para fotografiar la Luna sin errores.
+            Luna, cielo nocturno o Vía Láctea con suelo. Incluye submenú para elegir si disparas solo al cielo o a un paisaje con suelo.
           </p>
-          <div class="discipline-preset-badge">Preset: 16mm · f/2.8 (Astro)</div>
-          <div class="discipline-action">Iniciar Astrofotografía →</div>
+          <div class="discipline-preset-badge">Luna / Vía Láctea / Cielo</div>
+          <div class="discipline-action">Elegir Tipo Nocturno →</div>
         </div>
 
         <!-- 3. Fotografía Callejera -->
@@ -66,7 +66,7 @@
           <div class="discipline-icon">⚙️</div>
           <div class="discipline-title">Modo Libre / Completo</div>
           <p class="discipline-desc">
-            Calculadora abierta sin presets prefijados. Ajusta manualmente cualquier sensor, focal milimétrica y diafragma que desees.
+            Calculadora abierta sin presets prefijados. Ajusta manualmente cualquier sensor, focal de 8mm a 600mm y diafragma que desees.
           </p>
           <div class="discipline-preset-badge">Ajuste Manual Libre</div>
           <div class="discipline-action">Abrir Calculadora →</div>
@@ -74,7 +74,137 @@
       </div>
     </section>
 
-    <!-- SCREEN 2: INTERACTIVE CALCULATOR -->
+    <!-- SCREEN 1.5: ASTROPHOTOGRAPHY SUBMENU (SUB-BIFURCATION) -->
+    <section id="screen-astro-sub" class="hidden">
+      <div class="onboarding-hero">
+        <div class="onboarding-badge">🌌 Astrofotografía & Noche</div>
+        <h1>¿Qué vas a fotografiar en la noche?</h1>
+        <p>El método de enfoque cambia radicalmente si hay suelo en el encuadre o si solo apuntas al espacio exterior:</p>
+      </div>
+
+      <div class="disciplines-grid">
+        <!-- Option A: Solo Luna o Espacio Profundo -->
+        <div class="discipline-card" data-astro-choice="moon">
+          <div class="discipline-icon">🌕</div>
+          <div class="discipline-title">Solo la Luna o el Espacio</div>
+          <p class="discipline-desc">
+            Vas a apuntar al cielo para fotografiar <strong>solo la Luna, planetas o estrellas</strong>, sin elementos terrestres ni suelo en el encuadre.
+          </p>
+          <div class="discipline-preset-badge" style="background: rgba(88, 166, 255, 0.15); color: #79c0ff; border: 1px solid rgba(88, 166, 255, 0.3);">
+            🎯 Enfocar directo a la Luna / Infinito (∞)
+          </div>
+          <div class="discipline-action">Ver Guía para Luna & Teleobjetivo →</div>
+        </div>
+
+        <!-- Option B: Paisaje Nocturno con Suelo -->
+        <div class="discipline-card" data-astro-choice="landscape">
+          <div class="discipline-icon">🌌</div>
+          <div class="discipline-title">Paisaje Nocturno Completo</div>
+          <p class="discipline-desc">
+            Vas a componer una toma con el <strong>cielo estrellado / Vía Láctea Y elementos en el suelo</strong> (una roca, una carpa, árboles o montañas).
+          </p>
+          <div class="discipline-preset-badge">📐 Requiere Distancia Hiperfocal</div>
+          <div class="discipline-action">Calcular Hiperfocal Nocturna →</div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 10px;">
+        <button id="btn-back-disciplines" class="btn btn-ghost">← Volver a elegir tipo de fotografía</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 1.6: DEDICATED MOON & DEEP SPACE GUIDE -->
+    <section id="screen-moon-guide" class="hidden">
+      <!-- Mode banner -->
+      <div class="mode-banner">
+        <div class="mode-badge-info">
+          <div class="mode-icon-circle">🌕</div>
+          <div>
+            <div class="mode-name">Fotografía de la Luna & Espacio Profundo</div>
+            <div class="mode-hint-text">Sujetos en el infinito puro sin elementos en tierra</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button id="btn-switch-to-night-landscape" class="btn btn-ghost" style="padding: 5px 12px; font-size: 11px;">
+            <span>🌌 Cambiar a Paisaje Nocturno (Hiperfocal)</span>
+          </button>
+          <button id="btn-moon-change-mode" class="btn btn-ghost" style="padding: 5px 12px; font-size: 11px;">
+            <span>Cambiar tipo de foto</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Verdict Banner -->
+      <div class="moon-hero-verdict">
+        <div class="moon-badge">Veredicto Óptico para la Luna</div>
+        <div class="moon-verdict-title">🎯 Enfocá directamente a la <span>Luna</span> o al <span>Infinito (∞)</span></div>
+        <p class="moon-verdict-sub">
+          <strong>La distancia hiperfocal NO se utiliza en esta toma.</strong> La Luna se encuentra a 384.000 km de distancia y las estrellas a billones de kilómetros. Al no haber suelo ni objetos en primer plano que mantener enfocados, tu único objetivo es clavar el foco en el infinito.
+        </p>
+
+        <!-- Moon Exposure Rules -->
+        <div class="moon-params-grid">
+          <div class="moon-param-card">
+            <span class="param-name">Apertura Recomendada</span>
+            <span class="param-val">f/8 o f/11</span>
+            <span class="param-why">Punto más nítido del teleobjetivo (evita f/22 por difracción).</span>
+          </div>
+          <div class="moon-param-card">
+            <span class="param-name">Velocidad de Obturación</span>
+            <span class="param-val">1/125s o 1/250s</span>
+            <span class="param-why">La Luna se mueve rápido por la rotación terrestre. ¡No uses segundos de exposición!</span>
+          </div>
+          <div class="moon-param-card">
+            <span class="param-name">Sensibilidad ISO</span>
+            <span class="param-val">ISO 100 o 200</span>
+            <span class="param-why">La Luna es una roca iluminada por el Sol pleno: hay mucha luz disponible.</span>
+          </div>
+          <div class="moon-param-card">
+            <span class="param-name">Disparador</span>
+            <span class="param-val">Temporizador 2s</span>
+            <span class="param-why">Evita que la vibración de tu dedo al presionar el botón arruine la nitidez.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step by step guide for Moon / Telephoto lenses -->
+      <div class="guide-card">
+        <div class="guide-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <span>Paso a Paso: Cómo clavar el foco en la Luna con tu teleobjetivo (50-250mm, 70-300mm, 600mm)</span>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-item">
+            <span class="step-num">Paso 1 · Zoom y Trípode</span>
+            <h4>Estirá tu lente al máximo</h4>
+            <p>Si tienes un lente zoom como un <strong>50-250mm</strong> o <strong>70-300mm</strong>, ponlo en su máxima distancia focal (ej. 250mm). Monta la cámara sobre un trípode estable.</p>
+          </div>
+
+          <div class="step-item">
+            <span class="step-num">Paso 2 · Enfoque Manual</span>
+            <h4>Palanca a MF</h4>
+            <p>Pasa la palanca del lente o el menú de la cámara a <strong>MF (Manual Focus)</strong>. El autofoco suele fallar en la noche intentando encontrar contraste en el cielo negro.</p>
+          </div>
+
+          <div class="step-item">
+            <span class="step-num">Paso 3 · Lupa Digital al 100%</span>
+            <h4>Magnificador en pantalla</h4>
+            <p>Enciende la pantalla o mira por el visor electrónico (EVF) y presiona el botón de <strong>Lupa / Magnificador digital (5× o 10×)</strong> apuntando al borde de la Luna o a sus cráteres.</p>
+          </div>
+
+          <div class="step-item">
+            <span class="step-num">Paso 4 · Ajuste Milimétrico</span>
+            <h4>Girá el anillo despacio</h4>
+            <p>Gira el anillo de enfoque con suavidad hasta que los cráteres se vean con bordes filosos y contraste nítido. Una vez logrado, <strong>no toques más el anillo</strong> y dispara con retardo de 2 segundos.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: INTERACTIVE HYPERFOCAL CALCULATOR -->
     <section id="screen-calculator" class="hidden">
 
       <!-- Active Mode Banner -->
@@ -86,9 +216,14 @@
             <div id="mode-hint" class="mode-hint-text">Máxima nitidez desde el primer plano hasta el horizonte</div>
           </div>
         </div>
-        <button id="btn-change-mode" class="btn btn-ghost" style="padding: 5px 12px; font-size: 11px;">
-          <span>Cambiar tipo de foto</span>
-        </button>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button id="btn-switch-moon" class="btn btn-ghost hidden" style="padding: 5px 12px; font-size: 11px;">
+            <span>🌕 Cambiar a Solo Luna / Espacio</span>
+          </button>
+          <button id="btn-change-mode" class="btn btn-ghost" style="padding: 5px 12px; font-size: 11px;">
+            <span>Cambiar tipo de foto</span>
+          </button>
+        </div>
       </div>
 
       <!-- 2-Column Calculator Form & Results -->
@@ -141,22 +276,29 @@
             <span>2. Tu Lente y Apertura</span>
           </div>
 
-          <!-- Focal Length -->
+          <!-- Focal Length (Expanded to 600mm + Direct Number Input) -->
           <div class="control-group">
             <div class="control-label-row">
               <label class="control-label" for="focal-slider">Distancia Focal:</label>
-              <span id="focal-val-badge" class="control-val-badge">24 mm</span>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <input type="number" id="focal-input" class="focal-number-input" min="8" max="800" value="24" title="Ingresá la focal exacta en milímetros" />
+                <span class="control-val-badge">mm</span>
+              </div>
             </div>
-            <input type="range" id="focal-slider" class="optics-slider" min="10" max="200" step="1" value="24" />
+            <input type="range" id="focal-slider" class="optics-slider" min="8" max="600" step="1" value="24" />
             <div class="preset-buttons-row">
               <button class="preset-btn focal-btn" data-focal="14">14mm</button>
               <button class="preset-btn focal-btn" data-focal="16">16mm</button>
               <button class="preset-btn focal-btn" data-focal="20">20mm</button>
               <button class="preset-btn focal-btn active" data-focal="24">24mm</button>
-              <button class="preset-btn focal-btn" data-focal="28">28mm</button>
               <button class="preset-btn focal-btn" data-focal="35">35mm</button>
               <button class="preset-btn focal-btn" data-focal="50">50mm</button>
-              <button class="preset-btn focal-btn" data-focal="85">85mm</button>
+              <button class="preset-btn focal-btn" data-focal="70">70mm</button>
+              <button class="preset-btn focal-btn" data-focal="135">135mm</button>
+              <button class="preset-btn focal-btn" data-focal="200">200mm</button>
+              <button class="preset-btn focal-btn" data-focal="250">250mm</button>
+              <button class="preset-btn focal-btn" data-focal="400">400mm</button>
+              <button class="preset-btn focal-btn" data-focal="600">600mm</button>
             </div>
           </div>
 

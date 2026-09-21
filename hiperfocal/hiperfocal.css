@@ -493,6 +493,33 @@ body {
   font-family: 'JetBrains Mono', monospace, sans-serif;
 }
 
+.focal-number-input {
+  width: 72px;
+  background: #181818;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--accent);
+  text-align: right;
+  font-family: 'JetBrains Mono', monospace, sans-serif;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.focal-number-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-dim);
+}
+.focal-number-input::-webkit-outer-spin-button,
+.focal-number-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.focal-number-input[type=number] {
+  -moz-appearance: textfield;
+}
+
 .preset-buttons-row {
   display: flex;
   flex-wrap: wrap;
@@ -833,6 +860,94 @@ body {
   font-size: 12px;
   color: var(--text-muted);
   line-height: 1.5;
+}
+
+/* Astro Sub-menu Screen & Moon Guide Screen */
+#screen-astro-sub,
+#screen-moon-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+#screen-astro-sub.hidden,
+#screen-moon-guide.hidden {
+  display: none !important;
+}
+
+.moon-hero-verdict {
+  background: linear-gradient(145deg, #161a22 0%, #101216 100%);
+  border: 1px solid rgba(88, 166, 255, 0.35);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.6);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+  align-items: center;
+}
+.moon-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(88, 166, 255, 0.15);
+  border: 1px solid rgba(88, 166, 255, 0.4);
+  color: #79c0ff;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+.moon-verdict-title {
+  font-size: clamp(24px, 4vw, 34px);
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+.moon-verdict-title span {
+  color: var(--accent);
+}
+.moon-verdict-sub {
+  font-size: 13px;
+  color: #bbb;
+  max-width: 680px;
+  line-height: 1.6;
+}
+
+.moon-params-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+  width: 100%;
+  margin-top: 8px;
+}
+.moon-param-card {
+  background: #151515;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+}
+.moon-param-card .param-name {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.moon-param-card .param-val {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--accent);
+  font-family: 'JetBrains Mono', monospace, sans-serif;
+}
+.moon-param-card .param-why {
+  font-size: 11px;
+  color: var(--text-dim);
 }
 
 /* Footer */
