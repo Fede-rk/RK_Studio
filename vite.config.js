@@ -1,14 +1,18 @@
-import { resolve } from 'path';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
 import { defineConfig } from 'vite';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export default defineConfig({
   build: {
     sourcemap: false,
     rollupOptions: {
       input: {
-        main: resolve(import.meta.dirname, 'index.html'),
-        filmlab: resolve(import.meta.dirname, 'filmlab/index.html'),
-        comparador: resolve(import.meta.dirname, 'comparador/index.html'),
+        main: resolve(__dirname, 'index.html'),
+        filmlab: resolve(__dirname, 'filmlab/index.html'),
+        comparador: resolve(__dirname, 'comparador/index.html'),
       },
     },
   },

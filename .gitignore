@@ -14,6 +14,7 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Environment & Local files
+*.bat
 .env
 .env.local
 .env.*.local
