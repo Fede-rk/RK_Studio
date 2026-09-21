@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RK Hiperfocal — Calculadora Óptica y Guía de Enfoque</title>
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="./hiperfocal.css" />
+</head>
+<body>
+
+  <header id="header">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <a href="/" class="btn btn-ghost" style="padding: 4px 10px; font-size: 11px;">← RK Studio</a>
+      <div class="logo">RK <span>Hiperfocal</span></div>
+    </div>
+    <div style="font-size: 11px; color: var(--text-muted);">Guía Óptica de Enfoque</div>
+  </header>
+
+  <main class="main-container">
+
+    <!-- SCREEN 1: ONBOARDING / DISCIPLINE SELECTION -->
+    <section id="screen-disciplines">
+      <div class="onboarding-hero">
+        <div class="onboarding-badge">✦ Máxima Nitidez al Infinito</div>
+        <h1>¿Qué tipo de fotografía vas a realizar?</h1>
+        <p>Elegí tu disciplina para que la herramienta prepare la configuración óptica recomendada y te brinde los consejos específicos para tu toma.</p>
+      </div>
+
+      <div class="disciplines-grid">
+        <!-- 1. Paisaje Diurno -->
+        <div class="discipline-card" data-mode="landscape">
+          <div class="discipline-icon">🏔️</div>
+          <div class="discipline-title">Paisaje Diurno</div>
+          <p class="discipline-desc">
+            Máxima nitidez desde el primer plano (flores, rocas, camino a tus pies) hasta el horizonte y las montañas lejanas sin difracción.
+          </p>
+          <div class="discipline-preset-badge">Preset: 24mm · f/8</div>
+          <div class="discipline-action">Iniciar Paisaje →</div>
+        </div>
+
+        <!-- 2. Astrofotografía & Luna -->
+        <div class="discipline-card" data-mode="astro">
+          <div class="discipline-icon">🌌</div>
+          <div class="discipline-title">Astrofotografía & Luna</div>
+          <p class="discipline-desc">
+            Estrellas como puntos nítidos en el cielo nocturno y suelo enfocado. Incluye la guía clave para fotografiar la Luna sin errores.
+          </p>
+          <div class="discipline-preset-badge">Preset: 16mm · f/2.8 (Astro)</div>
+          <div class="discipline-action">Iniciar Astrofotografía →</div>
+        </div>
+
+        <!-- 3. Fotografía Callejera -->
+        <div class="discipline-card" data-mode="street">
+          <div class="discipline-icon">🏙️</div>
+          <div class="discipline-title">Fotografía Callejera</div>
+          <p class="discipline-desc">
+            Disparo instantáneo sin esperar a que el lente enfoque ("Zone Focusing"). Ideal para capturar momentos fugaces en la ciudad.
+          </p>
+          <div class="discipline-preset-badge">Preset: 35mm · f/8 (Street)</div>
+          <div class="discipline-action">Iniciar Street →</div>
+        </div>
+
+        <!-- 4. Modo Libre -->
+        <div class="discipline-card" data-mode="custom">
+          <div class="discipline-icon">⚙️</div>
+          <div class="discipline-title">Modo Libre / Completo</div>
+          <p class="discipline-desc">
+            Calculadora abierta sin presets prefijados. Ajusta manualmente cualquier sensor, focal milimétrica y diafragma que desees.
+          </p>
+          <div class="discipline-preset-badge">Ajuste Manual Libre</div>
+          <div class="discipline-action">Abrir Calculadora →</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: INTERACTIVE CALCULATOR -->
+    <section id="screen-calculator" class="hidden">
+
+      <!-- Active Mode Banner -->
+      <div class="mode-banner">
+        <div class="mode-badge-info">
+          <div id="mode-icon" class="mode-icon-circle">🏔️</div>
+          <div>
+            <div id="mode-name" class="mode-name">Paisaje Diurno</div>
+            <div id="mode-hint" class="mode-hint-text">Máxima nitidez desde el primer plano hasta el horizonte</div>
+          </div>
+        </div>
+        <button id="btn-change-mode" class="btn btn-ghost" style="padding: 5px 12px; font-size: 11px;">
+          <span>Cambiar tipo de foto</span>
+        </button>
+      </div>
+
+      <!-- 2-Column Calculator Form & Results -->
+      <div class="calc-grid">
+
+        <!-- Left Column: Inputs -->
+        <div class="calc-card">
+          <div class="card-title">
+            <span>1. Tu Cámara y Sensor</span>
+          </div>
+
+          <!-- Camera Search & Select -->
+          <div class="camera-input-block">
+            <div class="search-input-wrapper">
+              <svg class="search-icon" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+              </svg>
+              <input type="text" id="camera-search-input" class="camera-search-input" placeholder="Buscar por modelo (ej. A7 IV, R6, Z8, T7, X-T5, GH6)..." autocomplete="off" />
+              <!-- Autocomplete Dropdown -->
+              <div id="suggestions-dropdown" class="suggestions-dropdown"></div>
+            </div>
+
+            <!-- Quick Sensor Selection Chips -->
+            <div class="sensor-chips-row">
+              <button class="sensor-chip active" data-sensor="full_frame">Full Frame (35mm)</button>
+              <button class="sensor-chip" data-sensor="apsc_sony_fuji_nikon">APS-C (Sony / Fuji / Nikon)</button>
+              <button class="sensor-chip" data-sensor="apsc_canon">APS-C Canon (1.6×)</button>
+              <button class="sensor-chip" data-sensor="mft">Micro 4/3 (Olympus / Lumix)</button>
+              <button class="sensor-chip" data-sensor="medium_format">Formato Medio</button>
+            </div>
+
+            <!-- Selected Camera Badge -->
+            <div id="selected-camera-badge" class="selected-camera-badge">
+              <span id="selected-camera-title" class="selected-camera-title">Full Frame (35mm)</span>
+              <span id="selected-camera-meta" class="selected-camera-meta">Crop 1.0× · CoC 0.030mm</span>
+            </div>
+
+            <!-- Circle of confusion toggle -->
+            <div class="coc-toggle-row">
+              <span style="color: var(--text-muted);">Criterio de Nitidez:</span>
+              <div class="coc-pills">
+                <button class="coc-pill active" data-strict="false" title="Criterio estándar para impresiones y visualización completa">Estándar</button>
+                <button class="coc-pill" data-strict="true" title="Criterio estricto a nivel de píxel al 100%, ideal para astrofotografía">Astro / Pixel 100%</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lens Focal & Aperture -->
+          <div class="card-title" style="margin-top: 10px;">
+            <span>2. Tu Lente y Apertura</span>
+          </div>
+
+          <!-- Focal Length -->
+          <div class="control-group">
+            <div class="control-label-row">
+              <label class="control-label" for="focal-slider">Distancia Focal:</label>
+              <span id="focal-val-badge" class="control-val-badge">24 mm</span>
+            </div>
+            <input type="range" id="focal-slider" class="optics-slider" min="10" max="200" step="1" value="24" />
+            <div class="preset-buttons-row">
+              <button class="preset-btn focal-btn" data-focal="14">14mm</button>
+              <button class="preset-btn focal-btn" data-focal="16">16mm</button>
+              <button class="preset-btn focal-btn" data-focal="20">20mm</button>
+              <button class="preset-btn focal-btn active" data-focal="24">24mm</button>
+              <button class="preset-btn focal-btn" data-focal="28">28mm</button>
+              <button class="preset-btn focal-btn" data-focal="35">35mm</button>
+              <button class="preset-btn focal-btn" data-focal="50">50mm</button>
+              <button class="preset-btn focal-btn" data-focal="85">85mm</button>
+            </div>
+          </div>
+
+          <!-- Aperture -->
+          <div class="control-group">
+            <div class="control-label-row">
+              <label class="control-label" for="aperture-slider">Apertura del Diafragma:</label>
+              <span id="aperture-val-badge" class="control-val-badge">f/8.0</span>
+            </div>
+            <input type="range" id="aperture-slider" class="optics-slider" min="0" max="10" step="1" value="7" />
+            <div class="preset-buttons-row">
+              <button class="preset-btn aperture-btn" data-aperture="1.4">f/1.4</button>
+              <button class="preset-btn aperture-btn" data-aperture="1.8">f/1.8</button>
+              <button class="preset-btn aperture-btn" data-aperture="2.8">f/2.8</button>
+              <button class="preset-btn aperture-btn" data-aperture="4">f/4</button>
+              <button class="preset-btn aperture-btn" data-aperture="5.6">f/5.6</button>
+              <button class="preset-btn aperture-btn active" data-aperture="8">f/8</button>
+              <button class="preset-btn aperture-btn" data-aperture="11">f/11</button>
+              <button class="preset-btn aperture-btn" data-aperture="16">f/16</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Results & Interactive Diagram -->
+        <div class="result-card">
+          <div class="result-header">
+            <span style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent);">
+              Resultado Óptico
+            </span>
+            <div class="unit-switcher">
+              <button class="unit-btn active" data-unit="m">Metros (m)</button>
+              <button class="unit-btn" data-unit="ft">Pies (ft)</button>
+            </div>
+          </div>
+
+          <!-- Big Hero Number -->
+          <div class="hero-result-block">
+            <div class="hero-label">Enfocá tu lente exactamente a:</div>
+            <div style="display: flex; align-items: baseline; gap: 6px;">
+              <span id="result-number" class="hero-number">2.40</span>
+              <span id="result-unit" style="font-size: 20px; font-weight: 800; color: var(--accent);">m</span>
+            </div>
+            <div class="hero-sub">Distancia Hiperfocal (H)</div>
+          </div>
+
+          <!-- Metrics Row -->
+          <div class="metrics-row">
+            <div class="metric-box">
+              <span class="metric-title">Inicio de Nitidez (H/2)</span>
+              <span id="metric-near" class="metric-value">1.20 m</span>
+              <span class="metric-extra">Todo lo anterior queda desenfocado</span>
+            </div>
+
+            <div class="metric-box">
+              <span class="metric-title">Límite Lejano</span>
+              <span id="metric-far" class="metric-value">Infinito (∞)</span>
+              <span class="metric-extra">Hasta el horizonte o estrellas</span>
+            </div>
+
+            <div class="metric-box">
+              <span class="metric-title">Profundidad Total</span>
+              <span id="metric-dof" class="metric-value">Infinita (∞)</span>
+              <span class="metric-extra">Máxima cobertura posible</span>
+            </div>
+
+            <div class="metric-box">
+              <span class="metric-title">Círculo de Confusión</span>
+              <span id="metric-coc" class="metric-value">0.030 mm</span>
+              <span class="metric-extra">Tolerancia del sensor</span>
+            </div>
+          </div>
+
+          <!-- Visual Depth of Field Diagram -->
+          <div class="diagram-container">
+            <div class="diagram-title">
+              <span>Diagrama de Nitidez en Tiempo Real</span>
+              <span style="color: var(--accent); font-size: 10px;">Enfocado en H</span>
+            </div>
+
+            <div class="ruler-track">
+              <!-- Blurred Zone (0 to H/2) -->
+              <div id="bar-blur" class="bar-blur">Desenfoque</div>
+              <!-- Sharp Zone (H/2 to Infinity) -->
+              <div id="bar-sharp" class="bar-sharp">
+                <span id="diagram-near-label" style="font-size: 10px;">1.2 m</span>
+                <span style="font-size: 12px; color: #fff;">Infinito (∞)</span>
+              </div>
+              <!-- Focus Pin at H -->
+              <div id="focus-pin" class="focus-pin">
+                <div id="pin-distance-label" class="focus-pin-tag">Enfocar aquí: 2.4 m</div>
+              </div>
+            </div>
+
+            <div class="diagram-labels-row">
+              <span>📷 Cámara (0 m)</span>
+              <span>Zona Nítida Continua</span>
+              <span>🌄 Infinito (∞)</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Step-by-Step Lens Setting Guide -->
+      <section class="guide-card">
+        <div class="guide-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <span>Guía Práctica: ¿Cómo configuro mi lente en la vida real?</span>
+        </div>
+
+        <!-- Dynamic Contextual Tips Box -->
+        <div id="guide-content-box" class="guide-content-box"></div>
+
+        <div class="steps-grid">
+          <div class="step-item">
+            <span class="step-num">Paso 1 · Cámara</span>
+            <h4>Modo Manual o Prioridad Apertura</h4>
+            <p>Configura tu cámara en modo <strong>M</strong> o <strong>A / Av</strong> y selecciona el diafragma calculado (ej. f/8).</p>
+          </div>
+
+          <div class="step-item">
+            <span class="step-num">Paso 2 · Lente Manual</span>
+            <h4>Lentes con escala de distancia</h4>
+            <p>Si tu lente tiene números grabados en metros, gira el anillo de enfoque manual hasta alinear la marca con el valor calculado.</p>
+          </div>
+
+          <div class="step-item">
+            <span class="step-num">Paso 3 · Lente Moderno</span>
+            <h4>Lentes electrónicos sin escala</h4>
+            <p>Enfoca con autofocus a un objeto ubicado a esa distancia aproximada (ej. una roca a 2.4 metros), pasa la palanca a <strong>MF</strong> y no toques más el anillo.</p>
+          </div>
+        </div>
+      </section>
+
+    </section>
+
+  </main>
+
+  <footer>
+    <p>Desarrollado para fotógrafos · <span>RK Studio</span> · Cálculo óptico 100% en tu navegador.</p>
+  </footer>
+
+  <script type="module" src="./hiperfocal.js"></script>
+</body>
+</html>

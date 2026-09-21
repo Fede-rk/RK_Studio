@@ -14,6 +14,7 @@ export default defineConfig({
         filmlab: resolve(__dirname, 'filmlab/index.html'),
         comparador: resolve(__dirname, 'comparador/index.html'),
         paleta: resolve(__dirname, 'paleta/index.html'),
+        hiperfocal: resolve(__dirname, 'hiperfocal/index.html'),
       },
     },
   },
