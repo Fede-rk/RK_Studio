@@ -582,6 +582,35 @@ body {
   cursor: pointer;
 }
 
+/* Curated Discipline Note */
+.curated-discipline-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(212, 168, 67, 0.08);
+  border: 1px solid rgba(212, 168, 67, 0.22);
+  border-radius: var(--radius-sm);
+  padding: 11px 13px;
+  margin-top: 14px;
+}
+.curated-discipline-note .note-icon {
+  font-size: 16px;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+.curated-note-text {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #c5c5c5;
+}
+.curated-note-text strong {
+  color: #fff;
+}
+.curated-note-text em {
+  color: var(--accent);
+  font-style: normal;
+}
+
 /* Right Column: Giant Result Card */
 .result-card {
   background: linear-gradient(145deg, #141416 0%, #101010 100%);

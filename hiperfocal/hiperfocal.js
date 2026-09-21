@@ -23,13 +23,12 @@ const MODE_PRESETS = {
     aperture: 8.0,
     strictCoc: false,
     subtitle: 'Máxima nitidez desde el primer plano hasta el horizonte',
+    focals: [14, 16, 20, 24, 28, 35, 50, 70],
+    focalRange: { min: 14, max: 70 },
+    apertures: [5.6, 8.0, 11.0],
+    curatedNote: '<strong>Opciones curadas para Paisaje:</strong> Focales angulares (14mm–70mm) y aperturas de punto dulce (f/5.6–f/11). Evitamos f/16–f/22 por difracción óptica. Si usás teleobjetivo (ej. 70-300mm), enfocá directo a tu sujeto principal.',
     guide: `
-      <p><strong>🎯 La Regla de Oro del Paisajista:</strong> Nunca enfoques al infinito (∞) en un paisaje con suelo. Si enfocas al horizonte, desperdicias la mitad de la profundidad de campo útil hacia atrás.</p>
-      <p>Enfocando a la <strong>distancia hiperfocal calculada</strong>, tus flores o rocas cercanas quedarán nítidas y las montañas del horizonte no perderán nitidez.</p>
-      <ul>
-        <li><strong>Apertura recomendada:</strong> Mantente entre <strong>f/8 y f/11</strong>. Diafragmas más cerrados como f/16 o f/22 introducen <em>difracción óptica</em>, que resta nitidez general.</li>
-        <li><strong>Lentes angulares:</strong> Cuanto más angular sea tu lente (ej. 16mm o 24mm), más cerca estará la hiperfocal y más fácil será tener todo a foco.</li>
-      </ul>
+      <p><strong>🎯 Regla del Paisaje:</strong> Usá la hiperfocal si tenés suelo cercano (rocas, flores a 1-2 metros) y horizonte al fondo. Si estás en un mirador sin primer plano cercano, enfocá directo al infinito o tercio medio.</p>
     `
   },
   astro: {
@@ -38,15 +37,13 @@ const MODE_PRESETS = {
     focal: 16,
     aperture: 2.8,
     strictCoc: true,
-    subtitle: 'Vía Láctea o cielo estrellado con rocas/árboles en el suelo',
+    subtitle: 'Vía Láctea o estrellas junto a rocas, carpas o árboles',
+    focals: [14, 16, 20, 24],
+    focalRange: { min: 14, max: 24 },
+    apertures: [1.4, 1.8, 2.0, 2.8],
+    curatedNote: '<strong>Opciones curadas para Noche:</strong> Solo grandes angulares luminosos (f/1.4 a f/2.8) para captar luz estelar con el suelo. Si querés fotografiar <strong>solo la Luna o el espacio</strong>, usá la guía de Luna arriba.',
     guide: `
-      <p><strong>🌌 Paisaje Nocturno (Cielo + Suelo):</strong> Estás componiendo con la Vía Láctea o estrellas de fondo y un elemento en tierra (roca, carpa, árbol).</p>
-      <ul>
-        <li><strong>Por qué usar la hiperfocal:</strong> Si enfocas a las estrellas, el primer plano saldrá desenfocado. Si enfocas a la hiperfocal, <em>ambos</em> saldrán nítidos.</li>
-        <li><strong>Apertura luminosa:</strong> Usa tu diafragma más abierto (f/1.4, f/2 o f/2.8) para captar la máxima luz de las estrellas.</li>
-        <li><strong>Criterio estricto activo:</strong> Se ha seleccionado el criterio de nitidez <em>Astro / Pixel 100%</em> para que las estrellas no tengan halos y se vean puntuales.</li>
-        <li><em>¿Querés sacarle solo a la Luna o a un planeta sin suelo?</em> Hacé clic en el botón superior <strong>"🌕 Cambiar a Solo Luna / Espacio"</strong>.</li>
-      </ul>
+      <p><strong>🌌 Regla Nocturna:</strong> Con la hiperfocal en f/2.8 asegurás nitidez en la tierra y en las estrellas. Para objetos celestes puros sin suelo, nunca uses hiperfocal: enfocá al infinito.</p>
     `
   },
   street: {
@@ -56,13 +53,12 @@ const MODE_PRESETS = {
     aperture: 8.0,
     strictCoc: false,
     subtitle: 'Disparo instantáneo sin retardo de autofocus ("Zone Focusing")',
+    focals: [24, 28, 35, 50],
+    focalRange: { min: 24, max: 50 },
+    apertures: [5.6, 8.0, 11.0],
+    curatedNote: '<strong>Opciones curadas para Street:</strong> Focales clásicas de calle (24mm–50mm) en f/5.6–f/11 para <em>Zone Focusing</em>. Consejo clave: usá velocidad mínima de <strong>1/250s</strong> (con Auto ISO) para congelar a los peatones en movimiento.',
     guide: `
-      <p><strong>⚡ Enfoque por Zonas (Zone Focusing):</strong> Los fotógrafos de calle más rápidos no esperan al autoenfoque; calibran su lente a la hiperfocal antes de empezar a caminar.</p>
-      <ul>
-        <li><strong>¿Cómo funciona?</strong> Con tu lente ajustado a la hiperfocal, todo sujeto que pase dentro de la <em>Zona Nítida</em> saldrá enfocado de forma instantánea al apretar el disparador.</li>
-        <li><strong>Focales reinas:</strong> 28mm o 35mm en f/8 te darán una zona de confort enorme (aproximadamente desde 1.5 a 2 metros hasta el infinito).</li>
-        <li>Dispara desde la cadera o sin mirar la pantalla sabiendo que el foco está 100% garantizado.</li>
-      </ul>
+      <p><strong>⚡ Enfoque por Zonas (Zone Focusing):</strong> Dejás tu lente fijado en la hiperfocal y disparás al instante sin esperar el autoenfoque. Todo lo que cruce la zona nítida saldrá enfocado.</p>
     `
   },
   custom: {
@@ -72,8 +68,12 @@ const MODE_PRESETS = {
     aperture: 8.0,
     strictCoc: false,
     subtitle: 'Control total de sensor, focal de 8mm a 600mm y diafragma',
+    focals: [14, 16, 20, 24, 28, 35, 50, 70, 135, 200, 250, 400, 600],
+    focalRange: { min: 8, max: 600 },
+    apertures: [1.4, 1.8, 2.0, 2.8, 4.0, 5.6, 8.0, 11.0, 16.0],
+    curatedNote: '<strong>⚙️ Modo Libre sin restricciones:</strong> Calculadora abierta con rango de 8mm a 600mm y diafragmas de f/1.4 a f/16 para calcular cualquier objetivo o experimentar libremente.',
     guide: `
-      <p><strong>Configuración manual completa:</strong> Ajusta libremente cualquier sensor, distancia focal milimétrica (incluso teleobjetivos de 250mm a 600mm) y número f para calcular la hiperfocal exacta y explorar la profundidad de campo geométrica.</p>
+      <p><strong>Modo Libre:</strong> Exploración geométrica libre. <em>Nota:</em> En teleobjetivos largos (>100mm) la hiperfocal suele superar los 100m–300m, por lo que para aves, retratos o deportes siempre se enfoca al sujeto.</p>
     `
   }
 };
@@ -141,8 +141,10 @@ const focusPin            = document.getElementById('focus-pin');
 const pinDistanceLabel    = document.getElementById('pin-distance-label');
 const diagramNearLabel    = document.getElementById('diagram-near-label');
 
-// Guide container
-const guideContentBox     = document.getElementById('guide-content-box');
+// Guide container & Curated notes
+const guideContentBox       = document.getElementById('guide-content-box');
+const curatedDisciplineNote = document.getElementById('curated-discipline-note');
+const curatedNoteText       = document.getElementById('curated-note-text');
 
 // Standard Apertures list for slider mapping
 const APERTURES = [1.2, 1.4, 1.8, 2.0, 2.8, 4.0, 5.6, 8.0, 11.0, 16.0, 22.0];
@@ -227,6 +229,38 @@ function setMoonSupport(supportType) {
   }
 }
 
+// Update dynamic curated options and technical note for active mode
+function updateCuratedControlsForMode(preset) {
+  // 1. Filter focal buttons
+  const allowedFocals = preset.focals || [14, 16, 20, 24, 28, 35, 50, 70, 135, 200, 250, 400, 600];
+  focalPresetBtns.forEach(btn => {
+    const fVal = parseInt(btn.dataset.focal, 10);
+    btn.style.display = allowedFocals.includes(fVal) ? '' : 'none';
+  });
+
+  // 2. Adjust slider & number input ranges
+  if (preset.focalRange) {
+    focalSlider.min = preset.focalRange.min;
+    focalSlider.max = preset.focalRange.max;
+    if (focalInput) {
+      focalInput.min = preset.focalRange.min;
+      focalInput.max = preset.focalRange.max;
+    }
+  }
+
+  // 3. Filter aperture buttons
+  const allowedApertures = preset.apertures || [1.4, 1.8, 2.0, 2.8, 4.0, 5.6, 8.0, 11.0, 16.0];
+  aperturePresetBtns.forEach(btn => {
+    const aVal = parseFloat(btn.dataset.aperture);
+    btn.style.display = allowedApertures.includes(aVal) ? '' : 'none';
+  });
+
+  // 4. Update Curated Note
+  if (curatedNoteText && preset.curatedNote) {
+    curatedNoteText.innerHTML = preset.curatedNote;
+  }
+}
+
 function selectMode(modeKey) {
   state.activeMode = modeKey;
   const preset = MODE_PRESETS[modeKey] || MODE_PRESETS.landscape;
@@ -250,6 +284,9 @@ function selectMode(modeKey) {
 
   // Update guide content
   guideContentBox.innerHTML = preset.guide;
+
+  // Update curated controls and note
+  updateCuratedControlsForMode(preset);
 
   // Switch to calculator view
   hideAllScreens();
@@ -512,9 +549,12 @@ function setupEventListeners() {
     focalInput.addEventListener('input', (e) => {
       let val = parseInt(e.target.value, 10);
       if (isNaN(val)) return;
-      val = Math.max(8, Math.min(800, val));
+      const preset = MODE_PRESETS[state.activeMode] || MODE_PRESETS.landscape;
+      const minF = preset.focalRange ? preset.focalRange.min : 8;
+      const maxF = preset.focalRange ? preset.focalRange.max : 600;
+      val = Math.max(minF, Math.min(maxF, val));
       state.focalLength = val;
-      focalSlider.value = Math.min(600, val);
+      focalSlider.value = val;
       focalPresetBtns.forEach(btn => {
         btn.classList.toggle('active', parseInt(btn.dataset.focal, 10) === state.focalLength);
       });
