@@ -94,6 +94,20 @@ const modeIconEl          = document.getElementById('mode-icon');
 const modeNameEl          = document.getElementById('mode-name');
 const modeHintEl          = document.getElementById('mode-hint');
 
+// Moon Support Switcher Elements (Tripod vs Handheld)
+const btnMoonTripod       = document.getElementById('btn-moon-tripod');
+const btnMoonHandheld     = document.getElementById('btn-moon-handheld');
+const moonValAperture     = document.getElementById('moon-val-aperture');
+const moonWhyAperture     = document.getElementById('moon-why-aperture');
+const moonValShutter      = document.getElementById('moon-val-shutter');
+const moonWhyShutter      = document.getElementById('moon-why-shutter');
+const moonValIso          = document.getElementById('moon-val-iso');
+const moonWhyIso          = document.getElementById('moon-why-iso');
+const moonValStab         = document.getElementById('moon-val-stab');
+const moonWhyStab         = document.getElementById('moon-why-stab');
+const moonStep1Title      = document.getElementById('moon-step1-title');
+const moonStep1Desc       = document.getElementById('moon-step1-desc');
+
 // Camera search & sensors
 const cameraSearchInput   = document.getElementById('camera-search-input');
 const suggestionsDropdown = document.getElementById('suggestions-dropdown');
@@ -171,6 +185,46 @@ function showMoonGuideScreen() {
   hideAllScreens();
   screenMoonGuide.classList.remove('hidden');
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Switch Moon parameters between Tripod and Handheld support
+function setMoonSupport(supportType) {
+  if (btnMoonTripod && btnMoonHandheld) {
+    btnMoonTripod.classList.toggle('active', supportType === 'tripod');
+    btnMoonHandheld.classList.toggle('active', supportType === 'handheld');
+  }
+
+  if (supportType === 'handheld') {
+    if (moonValAperture) moonValAperture.textContent = 'f/5.6 a f/8';
+    if (moonWhyAperture) moonWhyAperture.textContent = 'Abre más el diafragma para permitir una velocidad ultra-rápida sin subir tanto el ISO.';
+    
+    if (moonValShutter)  moonValShutter.textContent = '1/500s a 1/1000s';
+    if (moonWhyShutter)  moonWhyShutter.textContent = '¡Ultra rápida! Imprescindible para congelar el pulso a 250mm o 600mm y evitar fotos trepidadas.';
+    
+    if (moonValIso)      moonValIso.textContent = 'ISO 400 a 800';
+    if (moonWhyIso)      moonWhyIso.textContent = 'Compensa la velocidad extrema de 1/500s. En sensores modernos el ruido a ISO 400 es imperceptible.';
+    
+    if (moonValStab)     moonValStab.textContent = 'VR ON · Ráfaga Corta';
+    if (moonWhyStab)     moonWhyStab.textContent = 'Estabilizador (VR/IS/IBIS) ENCENDIDO y disparo en ráfaga de 3 fotos conteniendo la respiración.';
+    
+    if (moonStep1Title)  moonStep1Title.textContent = 'Cámara en mano (Trípode humano)';
+    if (moonStep1Desc)   moonStep1Desc.innerHTML = '<strong>Encendé el estabilizador (VR/IS/IBIS)</strong>, pegá los codos a las costillas, sostené el lente firmemente por debajo con la palma y <strong>dispará en ráfaga corta (3 fotos)</strong>. La segunda foto de la ráfaga siempre sale más nítida porque no sufre el golpe del dedo sobre el disparador.';
+  } else {
+    if (moonValAperture) moonValAperture.textContent = 'f/8 o f/11';
+    if (moonWhyAperture) moonWhyAperture.textContent = 'Punto dulce del teleobjetivo (evita f/22 por difracción).';
+    
+    if (moonValShutter)  moonValShutter.textContent = '1/125s o 1/250s';
+    if (moonWhyShutter)  moonWhyShutter.textContent = 'Sobre trípode firme congela el movimiento de rotación aparente.';
+    
+    if (moonValIso)      moonValIso.textContent = 'ISO 100 o 200';
+    if (moonWhyIso)      moonWhyIso.textContent = 'Cero grano ni ruido digital (la Luna refleja mucha luz solar).';
+    
+    if (moonValStab)     moonValStab.textContent = 'VR OFF · Retardo 2s';
+    if (moonWhyStab)     moonWhyStab.textContent = 'En trípode desactivá el VR/IS y activá el retardo de 2 segundos.';
+    
+    if (moonStep1Title)  moonStep1Title.textContent = 'Trípode firme y sin vibraciones';
+    if (moonStep1Desc)   moonStep1Desc.innerHTML = 'Montá la cámara en trípode, <strong>apagá el estabilizador (VR/IS/IBIS)</strong> para evitar micro-vibraciones falsas del motor giroscópico y activá el temporizador a <strong>2 segundos</strong>.';
+  }
 }
 
 function selectMode(modeKey) {
@@ -353,6 +407,18 @@ function setupEventListeners() {
   if (btnSwitchMoon) {
     btnSwitchMoon.addEventListener('click', () => {
       showMoonGuideScreen();
+    });
+  }
+
+  // Moon Support Switcher (Tripod vs Handheld)
+  if (btnMoonTripod) {
+    btnMoonTripod.addEventListener('click', () => {
+      setMoonSupport('tripod');
+    });
+  }
+  if (btnMoonHandheld) {
+    btnMoonHandheld.addEventListener('click', () => {
+      setMoonSupport('handheld');
     });
   }
 

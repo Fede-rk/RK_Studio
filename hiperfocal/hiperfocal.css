@@ -915,6 +915,34 @@ body {
   line-height: 1.6;
 }
 
+.moon-support-switcher {
+  display: inline-flex;
+  background: #181818;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 3px;
+  gap: 4px;
+  margin: 6px auto;
+}
+.moon-support-btn {
+  background: transparent;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.moon-support-btn:hover {
+  color: #fff;
+}
+.moon-support-btn.active {
+  background: var(--accent);
+  color: #0d0d0d;
+}
+
 .moon-params-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));

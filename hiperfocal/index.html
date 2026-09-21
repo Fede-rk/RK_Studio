@@ -142,27 +142,33 @@
           <strong>La distancia hiperfocal NO se utiliza en esta toma.</strong> La Luna se encuentra a 384.000 km de distancia y las estrellas a billones de kilómetros. Al no haber suelo ni objetos en primer plano que mantener enfocados, tu único objetivo es clavar el foco en el infinito.
         </p>
 
+        <!-- Tripod vs Handheld Switcher -->
+        <div class="moon-support-switcher">
+          <button id="btn-moon-tripod" class="moon-support-btn active" data-support="tripod">🔭 Con Trípode (Máxima Nitidez)</button>
+          <button id="btn-moon-handheld" class="moon-support-btn" data-support="handheld">🤲 Cámara en Mano (Sin Trípode)</button>
+        </div>
+
         <!-- Moon Exposure Rules -->
         <div class="moon-params-grid">
           <div class="moon-param-card">
-            <span class="param-name">Apertura Recomendada</span>
-            <span class="param-val">f/8 o f/11</span>
-            <span class="param-why">Punto más nítido del teleobjetivo (evita f/22 por difracción).</span>
+            <span class="param-name">Apertura</span>
+            <span id="moon-val-aperture" class="param-val">f/8 o f/11</span>
+            <span id="moon-why-aperture" class="param-why">Punto dulce del teleobjetivo (evita f/22 por difracción).</span>
           </div>
           <div class="moon-param-card">
             <span class="param-name">Velocidad de Obturación</span>
-            <span class="param-val">1/125s o 1/250s</span>
-            <span class="param-why">La Luna se mueve rápido por la rotación terrestre. ¡No uses segundos de exposición!</span>
+            <span id="moon-val-shutter" class="param-val">1/125s o 1/250s</span>
+            <span id="moon-why-shutter" class="param-why">Sobre trípode firme congela el movimiento de rotación.</span>
           </div>
           <div class="moon-param-card">
             <span class="param-name">Sensibilidad ISO</span>
-            <span class="param-val">ISO 100 o 200</span>
-            <span class="param-why">La Luna es una roca iluminada por el Sol pleno: hay mucha luz disponible.</span>
+            <span id="moon-val-iso" class="param-val">ISO 100 o 200</span>
+            <span id="moon-why-iso" class="param-why">Cero grano ni ruido digital (la Luna refleja mucha luz).</span>
           </div>
           <div class="moon-param-card">
-            <span class="param-name">Disparador</span>
-            <span class="param-val">Temporizador 2s</span>
-            <span class="param-why">Evita que la vibración de tu dedo al presionar el botón arruine la nitidez.</span>
+            <span class="param-name">Estabilizador & Disparo</span>
+            <span id="moon-val-stab" class="param-val">VR OFF · Retardo 2s</span>
+            <span id="moon-why-stab" class="param-why">En trípode desactiva el VR/IS y usa retardo de 2 segundos.</span>
           </div>
         </div>
       </div>
@@ -178,9 +184,9 @@
 
         <div class="steps-grid">
           <div class="step-item">
-            <span class="step-num">Paso 1 · Zoom y Trípode</span>
-            <h4>Estirá tu lente al máximo</h4>
-            <p>Si tienes un lente zoom como un <strong>50-250mm</strong> o <strong>70-300mm</strong>, ponlo en su máxima distancia focal (ej. 250mm). Monta la cámara sobre un trípode estable.</p>
+            <span class="step-num">Paso 1 · Soporte y Estabilizador</span>
+            <h4 id="moon-step1-title">Trípode firme o pulso en mano</h4>
+            <p id="moon-step1-desc">Con <strong>trípode</strong>: apaga el estabilizador (VR/IS) y pon retardo 2s. En <strong>mano</strong>: enciende el estabilizador, junta los codos al pecho para hacer un trípode humano y dispara ráfaga de 3 fotos conteniendo la respiración.</p>
           </div>
 
           <div class="step-item">
