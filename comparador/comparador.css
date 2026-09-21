@@ -168,6 +168,8 @@ body {
     overflow: hidden;
     background: #050505;
     cursor: ew-resize;
+    touch-action: none;
+    user-select: none;
 }
 
 /* Image Layers */
@@ -334,10 +336,13 @@ body {
 
 @media (max-width: 480px) {
     .phone-mockup {
-        width: 290px;
-        height: 515px;
+        width: min(300px, calc(100vw - 32px));
+        height: min(530px, calc((100vw - 32px) * (16 / 9)));
     }
-    .clip-layer .img-layer { width: 290px; }
-    .controls-grid { grid-template-columns: 1fr; }
+    .clip-layer .img-layer { width: min(300px, calc(100vw - 32px)); }
+    .controls-grid {
+        grid-template-columns: 1fr;
+        width: min(300px, calc(100vw - 32px));
+    }
     .btn-reel { grid-column: span 1; }
 }
