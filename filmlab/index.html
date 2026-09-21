@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RK FilmLab — Simulador de Grano y Revelado</title>
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+</head>
+<body>
+
+  <header id="header">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <a href="/" class="btn btn-ghost btn-sm" title="Volver al inicio de RK Studio" style="padding: 4px 8px; font-size: 11px;">← RK Studio</a>
+      <div class="logo">RK <span>FilmLab</span></div>
+    </div>
+    <div class="header-actions">
+      <button id="reset-btn" class="btn btn-ghost btn-sm" title="Reiniciar todos los parámetros">↺ Reset</button>
+    </div>
+  </header>
+
+  <main id="app">
+
+    <!-- Left: Preset rail -->
+    <aside id="preset-rail" aria-label="Presets"></aside>
+
+    <!-- Center: Preview -->
+    <section id="preview-area">
+
+      <!-- Drop overlay -->
+      <div id="drop-overlay" class="drop-overlay">
+        <div class="drop-content">
+          <div class="drop-icon">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="10" width="40" height="28" rx="3" stroke="currentColor" stroke-width="2"/>
+              <circle cx="24" cy="24" r="7" stroke="currentColor" stroke-width="2"/>
+              <rect x="7" y="13" width="5" height="4" rx="1" fill="currentColor"/>
+              <rect x="36" y="13" width="5" height="4" rx="1" fill="currentColor"/>
+              <rect x="7" y="31" width="5" height="4" rx="1" fill="currentColor"/>
+              <rect x="36" y="31" width="5" height="4" rx="1" fill="currentColor"/>
+            </svg>
+          </div>
+          <h1>RK FilmLab</h1>
+          <p class="drop-sub">Simulador de grano y revelado analógico</p>
+          <p class="drop-hint">Soltá tu foto aquí o elegí un archivo</p>
+          <p class="drop-formats">JPG · PNG · RAW (CR2, NEF, ARW, DNG…)</p>
+          <label class="btn btn-primary" for="file-input-drop">Elegir archivo</label>
+          <input type="file" id="file-input-drop"
+            accept=".jpg,.jpeg,.png,.webp,.tiff,.tif,.raw,.cr2,.cr3,.nef,.nrw,.arw,.sr2,.orf,.rw2,.dng,.raf,.rwl,.pef"
+            hidden />
+        </div>
+      </div>
+
+      <!-- Frame container for aspect ratio preview -->
+      <div id="frame-container" class="frame-container hidden">
+        <canvas id="preview-canvas"></canvas>
+        <div id="crop-grid" class="crop-grid hidden">
+          <div class="grid-line grid-h1"></div>
+          <div class="grid-line grid-h2"></div>
+          <div class="grid-line grid-v1"></div>
+          <div class="grid-line grid-v2"></div>
+        </div>
+      </div>
+
+      <!-- Compare / Framing badge -->
+      <div id="compare-badge" class="compare-badge hidden">
+        <span id="badge-text">Doble clic: encuadrar · Mantener presionado: original</span>
+      </div>
+
+      <!-- Processing indicator -->
+      <div id="processing" class="processing hidden">
+        <div class="spinner"></div>
+        <span>Cargando…</span>
+      </div>
+
+    </section>
+
+    <!-- Right: Controls -->
+    <aside id="controls-panel" aria-label="Controles">
+      <div id="controls-inner"></div>
+    </aside>
+
+  </main>
+
+  <!-- Bottom bar -->
+  <footer id="bottom-bar">
+    <div class="bottom-left">
+      <label class="btn btn-ghost btn-sm" for="file-input-replace" title="Cargar otra foto">
+        <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L11 6.414V13a1 1 0 11-2 0V6.414L7.707 7.707A1 1 0 016.293 6.293l3-3A1 1 0 0110 3z"/><path d="M3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg>
+        Cargar
+      </label>
+      <input type="file" id="file-input-replace"
+        accept=".jpg,.jpeg,.png,.webp,.tiff,.tif,.raw,.cr2,.cr3,.nef,.nrw,.arw,.sr2,.orf,.rw2,.dng,.raf,.rwl,.pef"
+        hidden />
+    </div>
+
+    <div class="bottom-center">
+      <button id="rotate-btn" class="btn btn-ghost btn-sm" title="Girar imagen 90° horario">
+        <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.047a1 1 0 011.885-.666A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566z" clip-rule="evenodd"/></svg>
+        Girar 90°
+      </button>
+
+      <div id="format-selector" class="format-selector" role="group" aria-label="Formato de exportación">
+        <button class="fmt-btn active" data-format="4:5" title="Portrait Instagram 1080×1350">4:5</button>
+        <button class="fmt-btn" data-format="1:1" title="Cuadrado 1080×1080">1:1</button>
+        <button class="fmt-btn" data-format="9:16" title="Stories / Reels 1080×1920">9:16</button>
+        <button class="fmt-btn" data-format="1.91:1" title="Horizontal cinemático 1080×566">Cine</button>
+      </div>
+
+      <button id="center-btn" class="btn btn-ghost btn-sm" title="Centrar imagen en el marco">
+        ⌖ Centrar
+      </button>
+    </div>
+
+    <div class="bottom-right">
+      <button id="export-btn" class="btn btn-primary btn-sm" disabled>
+        <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M10 17a1 1 0 01-.707-.293l-3-3a1 1 0 011.414-1.414L9 13.586V7a1 1 0 112 0v6.586l1.293-1.293a1 1 0 011.414 1.414l-3 3A1 1 0 0110 17z"/><path d="M3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg>
+        Exportar JPG
+      </button>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

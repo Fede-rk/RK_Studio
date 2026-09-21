@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RK ReelMaker — Comparador Antes y Después</title>
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="./comparador.css" />
+</head>
+<body>
+
+  <header id="header">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <a href="/" class="btn btn-ghost" style="padding: 4px 10px; font-size: 11px;">← RK Studio</a>
+      <div class="logo">RK <span>ReelMaker</span></div>
+    </div>
+    <div style="font-size: 11px; color: var(--text-muted);">Antes & Después · 9:16</div>
+  </header>
+
+  <main class="main-wrapper">
+
+    <div class="intro-text">
+      <h1>Comparador de Edición</h1>
+      <p>Arrastrá el control para comparar o generá un Reel animado en alta calidad (30 FPS)</p>
+    </div>
+
+    <!-- Framing mode switcher (Cover vs Contain) -->
+    <div class="fit-selector">
+      <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Ajuste:</span>
+      <button id="fit-cover-btn" class="fit-btn active" title="Llenar marco 9:16 (ideal para Reels y fotos verticales)">Llenar (9:16)</button>
+      <button id="fit-contain-btn" class="fit-btn" title="Foto completa sin recortar (ideal para fotos horizontales y cuadradas)">Foto Completa</button>
+    </div>
+
+    <!-- Phone Mockup -->
+    <div class="phone-mockup">
+      <!-- Notch / Dynamic Island -->
+      <div class="phone-notch">
+        <div class="camera-lens"></div>
+        <div class="speaker-pill"></div>
+      </div>
+
+      <!-- Status bar -->
+      <div class="phone-status">
+        <span>9:41</span>
+        <div class="status-icons">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L12 22l7.03-4.39C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9z"/></svg>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17 4h-3V2h-4v2H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2z"/></svg>
+        </div>
+      </div>
+
+      <!-- Screen Comparison Viewport -->
+      <div id="phone-screen" class="phone-screen">
+        <!-- Base Layer (Right side: EDITADA) -->
+        <img id="img-edited" class="img-layer fit-cover" alt="Editada" />
+        <div id="badge-edited" class="badge-tag tag-edited">Editada</div>
+
+        <!-- Clipped Top Layer (Left side: ORIGINAL) -->
+        <div id="clip-layer" class="clip-layer" style="width: 50%;">
+          <img id="img-original" class="img-layer fit-cover" alt="Original" />
+          <div id="badge-original" class="badge-tag tag-original">Original</div>
+        </div>
+
+        <!-- Slider Line & Handle -->
+        <div id="slider-handle" class="slider-handle-line" style="left: 50%;">
+          <div class="slider-handle-circle">⟨ ⟩</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-grid">
+      <label class="btn btn-ghost" for="input-original" title="Subir foto original">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/></svg>
+        <span>Cargar Original</span>
+        <input type="file" id="input-original" accept="image/*" style="display:none;" />
+      </label>
+
+      <label class="btn btn-ghost" for="input-edited" title="Subir foto editada">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/></svg>
+        <span>Cargar Editada</span>
+        <input type="file" id="input-edited" accept="image/*" style="display:none;" />
+      </label>
+
+      <button id="btn-animate" class="btn btn-ghost" style="grid-column: span 2;">
+        <svg id="btn-animate-icon" width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+        <span id="btn-animate-text">Ver Animación</span>
+      </button>
+
+      <button id="btn-export" class="btn btn-reel">
+        <svg id="btn-export-icon" width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+        <span id="btn-export-text">Descargar Reel (1080×1920 · 30 FPS)</span>
+      </button>
+    </div>
+
+    <p class="help-text">
+      Exporta un video optimizado en resolución 1080×1920 a 30 FPS (12 Mbps) listo para publicar en Instagram Reels y TikTok sin tirones.
+    </p>
+
+  </main>
+
+  <script type="module" src="./comparador.js"></script>
+</body>
+</html>
