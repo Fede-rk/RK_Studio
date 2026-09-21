@@ -195,19 +195,165 @@
     footer span {
       color: var(--accent);
     }
+
+    /* Mobile Dropdown & Quick Jumper (Notebook/Desktop hidden) */
+    .desktop-tagline {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .mobile-tool-selector {
+      display: none;
+    }
+    .mobile-hero-jumper {
+      display: none;
+    }
+
+    .mobile-select-pill {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+    .mobile-select-pill select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background: #181818;
+      color: var(--accent);
+      border: 1px solid rgba(212, 168, 67, 0.4);
+      border-radius: 20px;
+      padding: 6px 28px 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+    .mobile-select-pill select:focus,
+    .mobile-select-pill select:active {
+      border-color: var(--accent);
+      background: #202020;
+      box-shadow: 0 0 0 2px rgba(212, 168, 67, 0.25);
+    }
+    .mobile-select-pill .select-arrow {
+      position: absolute;
+      right: 10px;
+      pointer-events: none;
+      color: var(--accent);
+    }
+
+    .mobile-jumper-card {
+      background: #141414;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 24px;
+      text-align: left;
+    }
+    .jumper-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+    }
+    .mobile-select-pill.large-pill {
+      width: 100%;
+    }
+    .mobile-select-pill.large-pill select {
+      width: 100%;
+      padding: 12px 36px 12px 14px;
+      font-size: 14px;
+      border-radius: 10px;
+      background: #1a1a1a;
+      border-color: rgba(212, 168, 67, 0.5);
+    }
+    .mobile-select-pill.large-pill .select-arrow {
+      right: 14px;
+    }
+
+    /* Mobile media query */
+    @media (max-width: 768px) {
+      header {
+        padding: 0 16px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .desktop-tagline {
+        display: none;
+      }
+      .mobile-tool-selector {
+        display: flex;
+        align-items: center;
+      }
+      .mobile-hero-jumper {
+        display: block;
+      }
+      .hero {
+        padding: 40px 16px 24px;
+      }
+      .hero h1 {
+        font-size: 28px;
+      }
+      .tools-container {
+        padding: 0 16px 40px;
+      }
+      .tools-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+    }
   </style>
 </head>
 <body>
 
   <header>
     <div class="logo">RK <span>Studio</span></div>
-    <div style="font-size: 12px; color: var(--text-muted);">Suite Creativa Web</div>
+    <!-- Selector desplegable para móvil / celular -->
+    <div class="mobile-tool-selector">
+      <div class="mobile-select-pill">
+        <select id="mobile-tool-select" aria-label="Seleccionar herramienta" onchange="if(this.value) window.location.href = this.value;">
+          <option value="" disabled selected>⚡ Ir a...</option>
+          <option value="/filmlab/">🎞️ RK FilmLab</option>
+          <option value="/comparador/">📱 Antes / Después</option>
+          <option value="/paleta/">🎨 RK Paleta</option>
+          <option value="/hiperfocal/">🎯 RK Hiperfocal</option>
+        </select>
+        <svg class="select-arrow" width="12" height="12" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+        </svg>
+      </div>
+    </div>
+    <div class="desktop-tagline">Suite Creativa Web</div>
   </header>
 
   <section class="hero">
     <div class="hero-badge">✦ 100% en tu navegador · Sin registro</div>
     <h1>Herramientas visuales para fotografía y redes</h1>
     <p>Procesamiento directo de imágenes y generación de video con aceleración por hardware. Sin subir tus fotos a servidores externos.</p>
+
+    <!-- Selector desplegable en el hero para celular -->
+    <div class="mobile-hero-jumper">
+      <div class="mobile-jumper-card">
+        <span class="jumper-title">Abrir herramienta directa:</span>
+        <div class="mobile-select-pill large-pill">
+          <select id="hero-tool-select" aria-label="Abrir herramienta rápida" onchange="if(this.value) window.location.href = this.value;">
+            <option value="" disabled selected>⚡ Elegir herramienta directa...</option>
+            <option value="/filmlab/">🎞️ RK FilmLab — Revelador RAW & 35mm</option>
+            <option value="/comparador/">📱 Antes / Después — Comparador & Video</option>
+            <option value="/paleta/">🎨 RK Paleta — Extractor de Color</option>
+            <option value="/hiperfocal/">🎯 RK Hiperfocal — Guía de Enfoque</option>
+          </select>
+          <svg class="select-arrow" width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+      </div>
+    </div>
   </section>
 
   <main class="tools-container">
