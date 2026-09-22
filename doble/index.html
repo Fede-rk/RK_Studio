@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RK Doble Exposición — Laboratorio Analógico</title>
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="./doble.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo-group">
+      <a href="/" class="btn btn-ghost btn-sm" title="Volver al inicio de RK Studio">← RK Studio</a>
+      <div class="logo">RK <span>Doble Exposición</span></div>
+    </div>
+
+    <div class="header-actions">
+      <button id="btn-magic" class="btn btn-magic btn-sm" title="Analiza las fotos y compone automáticamente la mejor fusión">
+        ✨ Auto-Componer
+      </button>
+      <button id="btn-remix" class="btn btn-ghost btn-sm" title="Prueba una propuesta artística distinta con 1 clic">
+        🎲 Re-mezclar
+      </button>
+      <button id="btn-reset" class="btn btn-ghost btn-sm" title="Reiniciar posiciones y ajustes">
+        ↺ Reset
+      </button>
+      <button id="btn-export" class="btn btn-primary btn-sm" title="Descargar imagen fusionada en alta resolución">
+        <svg viewBox="0 0 20 20" fill="currentColor" width="13" height="13"><path d="M10 17a1 1 0 01-.707-.293l-3-3a1 1 0 011.414-1.414L9 13.586V7a1 1 0 112 0v6.586l1.293-1.293a1 1 0 011.414 1.414l-3 3A1 1 0 0110 17z"/><path d="M3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg>
+        Exportar JPG
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Workspace Layout -->
+  <main class="app-layout">
+
+    <!-- Left Controls Sidebar -->
+    <aside class="sidebar">
+
+      <!-- Demos rápidos sin fotos -->
+      <div class="sidebar-section">
+        <div class="section-title">
+          <span>Demos Rápidos (1 Clic)</span>
+        </div>
+        <div class="demos-grid">
+          <div class="demo-card active" data-demo="forest" title="Silueta de perfil + Bosque con niebla">
+            <span class="demo-icon">🌲</span>
+            <span class="demo-title">Silueta & Bosque</span>
+          </div>
+          <div class="demo-card" data-demo="neon" title="Retrato a contraluz + Luces de ciudad nocturna">
+            <span class="demo-icon">🌃</span>
+            <span class="demo-title">Noche & Neón</span>
+          </div>
+          <div class="demo-card" data-demo="flowers" title="Escultura / Manos + Textura botánica de flores">
+            <span class="demo-icon">🌸</span>
+            <span class="demo-title">Arte & Flores</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gestión de Capas (Base vs Textura) -->
+      <div class="sidebar-section">
+        <div class="section-title">
+          <span>Tus 2 Fotografías</span>
+        </div>
+
+        <div class="layer-slots-grid">
+          <!-- Layer 1: Base (Silueta) -->
+          <div id="slot-base" class="layer-slot-card active">
+            <div class="layer-slot-header">
+              <span class="layer-badge">👤 Capa 1 · Base / Silueta</span>
+              <div style="display: flex; gap: 4px;">
+                <button id="btn-bw-base" class="btn btn-ghost btn-sm" style="padding: 2px 6px; font-size: 10px;" title="Pasar capa base a blanco y negro">B&W</button>
+                <label for="file-input-base" class="btn btn-ghost btn-sm" style="padding: 2px 6px; font-size: 10px; cursor: pointer;">Cambiar</label>
+                <input type="file" id="file-input-base" accept="image/*" hidden />
+              </div>
+            </div>
+            <div class="layer-thumb-container">
+              <div class="layer-thumb" id="thumb-base"></div>
+              <div class="layer-meta">
+                <span class="layer-name" id="name-base">Silueta de Perfil</span>
+                <span class="layer-hint">Foto principal de alto contraste</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Swap Layers Button -->
+          <div class="swap-btn-container">
+            <button id="btn-swap-layers" class="swap-btn" title="Intercambiar qué foto es la base y cuál es la textura">
+              ⇄ Invertir Capas
+            </button>
+          </div>
+
+          <!-- Layer 2: Overlay (Textura) -->
+          <div id="slot-overlay" class="layer-slot-card">
+            <div class="layer-slot-header">
+              <span class="layer-badge">🌿 Capa 2 · Textura / Relleno</span>
+              <div style="display: flex; gap: 4px;">
+                <button id="btn-bw-overlay" class="btn btn-ghost btn-sm" style="padding: 2px 6px; font-size: 10px;" title="Pasar textura a blanco y negro">B&W</button>
+                <label for="file-input-overlay" class="btn btn-ghost btn-sm" style="padding: 2px 6px; font-size: 10px; cursor: pointer;">Cambiar</label>
+                <input type="file" id="file-input-overlay" accept="image/*" hidden />
+              </div>
+            </div>
+            <div class="layer-thumb-container">
+              <div class="layer-thumb" id="thumb-overlay"></div>
+              <div class="layer-meta">
+                <span class="layer-name" id="name-overlay">Bosque con Niebla</span>
+                <span class="layer-hint">Textura o paisaje para fundir</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modos de Fusión -->
+      <div class="sidebar-section">
+        <div class="section-title">
+          <span>Modo de Fusión Analógica</span>
+        </div>
+        <div class="blend-modes-grid">
+          <button class="blend-btn active" data-blend="screen">
+            <span class="mode-name">Trama (Screen)</span>
+            <span class="mode-desc">Clásica en fondo negro</span>
+          </button>
+          <button class="blend-btn" data-blend="multiply">
+            <span class="mode-name">Multiplicar</span>
+            <span class="mode-desc">Ideal sobre fondo blanco</span>
+          </button>
+          <button class="blend-btn" data-blend="lighten">
+            <span class="mode-name">Aclarar</span>
+            <span class="mode-desc">Luz directa en sombras</span>
+          </button>
+          <button class="blend-btn" data-blend="overlay">
+            <span class="mode-name">Superponer</span>
+            <span class="mode-desc">Look cinematográfico</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Ajustes de Fusión & Silueta -->
+      <div class="sidebar-section">
+        <div class="section-title">
+          <span>Ajustes de Doble Exposición</span>
+        </div>
+
+        <!-- Opacidad de Fusión -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="slider-opacity">Fuerza de la Textura:</label>
+            <span id="badge-opacity" class="control-val-badge">85%</span>
+          </div>
+          <input type="range" id="slider-opacity" class="optics-slider" min="10" max="100" value="85" />
+        </div>
+
+        <!-- Contraste de Silueta -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="slider-contrast">Contraste de Silueta (Base):</label>
+            <span id="badge-contrast" class="control-val-badge">120%</span>
+          </div>
+          <input type="range" id="slider-contrast" class="optics-slider" min="50" max="250" value="120" />
+        </div>
+
+        <!-- Sombras de Silueta -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="slider-shadows">Profundidad de Sombras:</label>
+            <span id="badge-shadows" class="control-val-badge">0</span>
+          </div>
+          <input type="range" id="slider-shadows" class="optics-slider" min="-50" max="50" value="0" />
+        </div>
+      </div>
+
+      <!-- Toques de Laboratorio Analógico -->
+      <div class="sidebar-section">
+        <div class="section-title">
+          <span>Estética Analógica Final</span>
+        </div>
+
+        <!-- Grano 35mm -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="slider-grain">Grano de Película 35mm:</label>
+            <span id="badge-grain" class="control-val-badge">25%</span>
+          </div>
+          <input type="range" id="slider-grain" class="optics-slider" min="0" max="100" value="25" />
+        </div>
+
+        <!-- Viñeta -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="slider-vignette">Viñeta Óptica:</label>
+            <span id="badge-vignette" class="control-val-badge">30%</span>
+          </div>
+          <input type="range" id="slider-vignette" class="optics-slider" min="0" max="100" value="30" />
+        </div>
+
+        <!-- Tonalidad / Tinte -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Tono / Coloración:</span>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <button class="pill-btn tint-btn active" data-tint="none">Neutro</button>
+            <button class="pill-btn tint-btn" data-tint="warm">Cálido Dorado</button>
+            <button class="pill-btn tint-btn" data-tint="cyan">Cianotipo</button>
+            <button class="pill-btn tint-btn" data-tint="sepia">Sepia Vintage</button>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Center Workspace / Canvas Area -->
+    <section class="workspace-area">
+
+      <!-- Toolbar superior del lienzo -->
+      <div class="workspace-toolbar">
+        <!-- Selector de capa a manipular -->
+        <div class="active-layer-pills">
+          <span style="font-size: 11px; color: var(--text-muted); margin-right: 4px;">Mover con mouse/touch:</span>
+          <button id="pill-select-base" class="pill-btn">👤 Capa Base</button>
+          <button id="pill-select-overlay" class="pill-btn active">🌿 Capa Textura</button>
+        </div>
+
+        <!-- Selector de proporción para redes -->
+        <div class="ratio-pills">
+          <button class="pill-btn ratio-btn active" data-ratio="4:5" title="Vertical clásico de Instagram (1080×1350)">4:5 (IG)</button>
+          <button class="pill-btn ratio-btn" data-ratio="1:1" title="Cuadrado (1080×1080)">1:1</button>
+          <button class="pill-btn ratio-btn" data-ratio="9:16" title="Vertical Stories / Reels (1080×1920)">9:16 Story</button>
+          <button class="pill-btn ratio-btn" data-ratio="free" title="Proporción libre según foto base">Original</button>
+        </div>
+
+        <!-- Quick actions -->
+        <div style="display: flex; gap: 6px;">
+          <button id="btn-center-layer" class="btn btn-ghost btn-sm" title="Centrar y ajustar capa seleccionada">🎯 Centrar</button>
+          <button id="btn-flip-layer" class="btn btn-ghost btn-sm" title="Espejar horizontalmente la capa seleccionada">⇄ Espejar</button>
+        </div>
+      </div>
+
+      <!-- Viewport del Canvas -->
+      <div id="canvas-viewport" class="canvas-viewport">
+        <!-- Indicador de capa activa -->
+        <div id="layer-indicator" class="layer-indicator-badge">
+          🌿 Manipulando: Capa Textura
+        </div>
+
+        <!-- Frame contenedor -->
+        <div id="canvas-frame-wrap" class="canvas-frame-wrap">
+          <canvas id="double-canvas" width="1080" height="1350"></canvas>
+        </div>
+
+        <!-- Tips flotantes de interacción -->
+        <div class="gesture-tips-overlay">
+          <span><strong>Arrastrar:</strong> Mover capa</span>
+          <span>·</span>
+          <span><strong>Rueda:</strong> Zoom / Escala</span>
+          <span>·</span>
+          <span><strong>Doble clic:</strong> Centrar</span>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script type="module" src="./doble.js"></script>
+</body>
+</html>

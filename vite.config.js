@@ -15,6 +15,7 @@ export default defineConfig({
         comparador: resolve(__dirname, 'comparador/index.html'),
         paleta: resolve(__dirname, 'paleta/index.html'),
         hiperfocal: resolve(__dirname, 'hiperfocal/index.html'),
+        doble: resolve(__dirname, 'doble/index.html'),
       },
     },
   },
