@@ -42,76 +42,57 @@
     <!-- Left Controls Sidebar -->
     <aside class="sidebar">
 
-      <!-- Demos rápidos sin fotos -->
+      <!-- Subir Tus 2 Fotografías -->
       <div class="sidebar-section">
         <div class="section-title">
-          <span>Demos Rápidos (1 Clic)</span>
-        </div>
-        <div class="demos-grid">
-          <div class="demo-card active" data-demo="forest" title="Silueta de perfil + Bosque con niebla">
-            <span class="demo-icon">🌲</span>
-            <span class="demo-title">Silueta & Bosque</span>
-          </div>
-          <div class="demo-card" data-demo="neon" title="Retrato a contraluz + Luces de ciudad nocturna">
-            <span class="demo-icon">🌃</span>
-            <span class="demo-title">Noche & Neón</span>
-          </div>
-          <div class="demo-card" data-demo="flowers" title="Escultura / Manos + Textura botánica de flores">
-            <span class="demo-icon">🌸</span>
-            <span class="demo-title">Arte & Flores</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Gestión de Capas (Base vs Textura) -->
-      <div class="sidebar-section">
-        <div class="section-title">
-          <span>Tus 2 Fotografías</span>
+          <span>Subir Tus 2 Fotografías</span>
         </div>
 
-        <div class="layer-slots-grid">
-          <!-- Layer 1: Base (Silueta) -->
-          <div id="slot-base" class="layer-slot-card active">
-            <div class="layer-slot-header">
-              <span class="layer-badge">👤 Capa 1 · Base / Silueta</span>
-              <div style="display: flex; gap: 4px;">
-                <button id="btn-bw-base" class="btn btn-ghost btn-sm" style="padding: 2px 6px; font-size: 10px;" title="Pasar capa base a blanco y negro">B&W</button>
-                <label for="file-input-base" class="btn btn-ghost btn-sm" style="padding: 2px 6px; font-size: 10px; cursor: pointer;">Cambiar</label>
-                <input type="file" id="file-input-base" accept="image/*" hidden />
-              </div>
+        <div class="upload-slots-container">
+          <!-- Foto 1: Base (Silueta) -->
+          <div id="slot-base" class="upload-card active">
+            <div class="upload-card-header">
+              <span class="upload-card-badge">👤 Foto 1 · Base / Silueta</span>
+              <button id="btn-bw-base" class="btn btn-ghost btn-sm" style="padding: 2px 7px; font-size: 10px;" title="Pasar foto base a blanco y negro">B&W</button>
             </div>
-            <div class="layer-thumb-container">
-              <div class="layer-thumb" id="thumb-base"></div>
-              <div class="layer-meta">
-                <span class="layer-name" id="name-base">Silueta de Perfil</span>
-                <span class="layer-hint">Foto principal de alto contraste</span>
+            <label for="file-input-base" class="btn-upload-trigger" id="trigger-base" title="Hacé clic para elegir la Foto 1 desde tu dispositivo">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <div class="upload-trigger-text">
+                <strong id="btn-label-base">Subir Foto 1 (Base)</strong>
+                <span id="name-base" class="upload-file-name">Retrato, silueta o contraluz</span>
               </div>
+            </label>
+            <input type="file" id="file-input-base" accept="image/*" hidden />
+            <div class="upload-preview-row" id="preview-row-base" style="display: none;">
+              <div class="layer-thumb" id="thumb-base"></div>
+              <span class="upload-status-text">✓ Foto 1 cargada</span>
             </div>
           </div>
 
           <!-- Swap Layers Button -->
           <div class="swap-btn-container">
-            <button id="btn-swap-layers" class="swap-btn" title="Intercambiar qué foto es la base y cuál es la textura">
-              ⇄ Invertir Capas
+            <button id="btn-swap-layers" class="swap-btn" title="Intercambiar cuál foto es la base y cuál es la textura">
+              ⇄ Invertir Foto 1 y Foto 2
             </button>
           </div>
 
-          <!-- Layer 2: Overlay (Textura) -->
-          <div id="slot-overlay" class="layer-slot-card">
-            <div class="layer-slot-header">
-              <span class="layer-badge">🌿 Capa 2 · Textura / Relleno</span>
-              <div style="display: flex; gap: 4px;">
-                <button id="btn-bw-overlay" class="btn btn-ghost btn-sm" style="padding: 2px 6px; font-size: 10px;" title="Pasar textura a blanco y negro">B&W</button>
-                <label for="file-input-overlay" class="btn btn-ghost btn-sm" style="padding: 2px 6px; font-size: 10px; cursor: pointer;">Cambiar</label>
-                <input type="file" id="file-input-overlay" accept="image/*" hidden />
-              </div>
+          <!-- Foto 2: Overlay (Textura) -->
+          <div id="slot-overlay" class="upload-card">
+            <div class="upload-card-header">
+              <span class="upload-card-badge">🌿 Foto 2 · Textura / Relleno</span>
+              <button id="btn-bw-overlay" class="btn btn-ghost btn-sm" style="padding: 2px 7px; font-size: 10px;" title="Pasar textura a blanco y negro">B&W</button>
             </div>
-            <div class="layer-thumb-container">
-              <div class="layer-thumb" id="thumb-overlay"></div>
-              <div class="layer-meta">
-                <span class="layer-name" id="name-overlay">Bosque con Niebla</span>
-                <span class="layer-hint">Textura o paisaje para fundir</span>
+            <label for="file-input-overlay" class="btn-upload-trigger" id="trigger-overlay" title="Hacé clic para elegir la Foto 2 desde tu dispositivo">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <div class="upload-trigger-text">
+                <strong id="btn-label-overlay">Subir Foto 2 (Textura)</strong>
+                <span id="name-overlay" class="upload-file-name">Paisaje, flores, cielo o luces</span>
               </div>
+            </label>
+            <input type="file" id="file-input-overlay" accept="image/*" hidden />
+            <div class="upload-preview-row" id="preview-row-overlay" style="display: none;">
+              <div class="layer-thumb" id="thumb-overlay"></div>
+              <span class="upload-status-text">✓ Foto 2 cargada</span>
             </div>
           </div>
         </div>
@@ -255,6 +236,24 @@
         <!-- Frame contenedor -->
         <div id="canvas-frame-wrap" class="canvas-frame-wrap">
           <canvas id="double-canvas" width="1080" height="1350"></canvas>
+        </div>
+
+        <!-- Empty State Dropzone -->
+        <div id="empty-dropzone" class="empty-dropzone">
+          <div class="empty-dropzone-content">
+            <div class="empty-icon">🎭</div>
+            <h3>Comenzá tu Doble Exposición</h3>
+            <p>Subí dos fotografías para fusionarlas. La Foto 1 define la silueta y la Foto 2 la textura que se funde en las sombras.</p>
+            <div class="empty-actions">
+              <label for="file-input-base" class="btn btn-primary" style="cursor: pointer;">
+                📁 Subir Foto 1 (Base)
+              </label>
+              <label for="file-input-overlay" class="btn btn-ghost" style="cursor: pointer;">
+                📁 Subir Foto 2 (Textura)
+              </label>
+            </div>
+            <span class="empty-drop-hint">o arrastrá las 2 fotos directamente aquí</span>
+          </div>
         </div>
 
         <!-- Tips flotantes de interacción -->

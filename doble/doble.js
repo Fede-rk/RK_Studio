@@ -16,7 +16,7 @@ const state = {
 
   base: {
     image: null,
-    name: 'Silueta de Perfil',
+    name: 'Sin foto base',
     bw: false,
     x: 0,
     y: 0,
@@ -26,7 +26,7 @@ const state = {
   },
   overlay: {
     image: null,
-    name: 'Bosque con Niebla',
+    name: 'Sin textura',
     bw: false,
     x: 0,
     y: 0,
@@ -42,6 +42,7 @@ const ctx = canvas.getContext('2d');
 const canvasViewport = document.getElementById('canvas-viewport');
 const canvasFrameWrap = document.getElementById('canvas-frame-wrap');
 const layerIndicator = document.getElementById('layer-indicator');
+const emptyDropzone = document.getElementById('empty-dropzone');
 
 // Layer slots & Thumbs
 const slotBase = document.getElementById('slot-base');
@@ -50,6 +51,12 @@ const thumbBase = document.getElementById('thumb-base');
 const thumbOverlay = document.getElementById('thumb-overlay');
 const nameBase = document.getElementById('name-base');
 const nameOverlay = document.getElementById('name-overlay');
+
+// Upload buttons & labels
+const btnLabelBase = document.getElementById('btn-label-base');
+const btnLabelOverlay = document.getElementById('btn-label-overlay');
+const previewRowBase = document.getElementById('preview-row-base');
+const previewRowOverlay = document.getElementById('preview-row-overlay');
 
 // File inputs
 const fileInputBase = document.getElementById('file-input-base');
@@ -83,10 +90,9 @@ const badgeGrain = document.getElementById('badge-grain');
 const sliderVignette = document.getElementById('slider-vignette');
 const badgeVignette = document.getElementById('badge-vignette');
 
-// Blend & Tint & Demo buttons
+// Blend & Tint buttons
 const blendBtns = document.querySelectorAll('.blend-btn');
 const tintBtns = document.querySelectorAll('.tint-btn');
-const demoCards = document.querySelectorAll('.demo-card');
 
 // Dragging state
 let isDragging = false;
@@ -127,7 +133,7 @@ function updateCanvasDisplaySize() {
 // Initialize
 function init() {
   setupEventListeners();
-  loadDemo('forest');
+  setRatio('4:5');
 
   // Responsive window resize listener
   window.addEventListener('resize', () => {
@@ -156,6 +162,31 @@ function setupEventListeners() {
   // File uploads
   fileInputBase.addEventListener('change', (e) => handleFileUpload(e, 'base'));
   fileInputOverlay.addEventListener('change', (e) => handleFileUpload(e, 'overlay'));
+
+  // Drag and Drop on Canvas Viewport
+  canvasViewport.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    canvasViewport.classList.add('drag-over');
+  });
+  canvasViewport.addEventListener('dragleave', (e) => {
+    if (e.target === canvasViewport || !canvasViewport.contains(e.relatedTarget)) {
+      canvasViewport.classList.remove('drag-over');
+    }
+  });
+  canvasViewport.addEventListener('drop', (e) => {
+    e.preventDefault();
+    canvasViewport.classList.remove('drag-over');
+    const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+    if (files.length === 0) return;
+    if (files.length >= 2) {
+      loadCustomFile(files[0], 'base');
+      loadCustomFile(files[1], 'overlay');
+    } else if (!state.base.image) {
+      loadCustomFile(files[0], 'base');
+    } else {
+      loadCustomFile(files[0], 'overlay');
+    }
+  });
 
   // Swap layers
   btnSwapLayers.addEventListener('click', swapLayers);
@@ -232,15 +263,6 @@ function setupEventListeners() {
     state.vignette = parseInt(e.target.value, 10) / 100;
     badgeVignette.textContent = `${e.target.value}%`;
     render();
-  });
-
-  // Demo cards
-  demoCards.forEach(card => {
-    card.addEventListener('click', () => {
-      demoCards.forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
-      loadDemo(card.dataset.demo);
-    });
   });
 
   // Magic & Remix & Reset & Export
@@ -333,9 +355,16 @@ function swapLayers() {
   state.base = { ...state.overlay };
   state.overlay = { ...temp };
 
-  // Update UI texts
-  nameBase.textContent = state.base.name;
-  nameOverlay.textContent = state.overlay.name;
+  // Update UI texts & upload triggers
+  nameBase.textContent = state.base.name || 'Retrato, silueta o contraluz';
+  nameOverlay.textContent = state.overlay.name || 'Paisaje, flores, cielo o luces';
+
+  if (btnLabelBase) btnLabelBase.textContent = state.base.image ? 'Cambiar Foto 1' : 'Subir Foto 1 (Base)';
+  if (btnLabelOverlay) btnLabelOverlay.textContent = state.overlay.image ? 'Cambiar Foto 2' : 'Subir Foto 2 (Textura)';
+
+  if (previewRowBase) previewRowBase.style.display = state.base.image ? 'flex' : 'none';
+  if (previewRowOverlay) previewRowOverlay.style.display = state.overlay.image ? 'flex' : 'none';
+
   updateThumbnail('base', state.base.image);
   updateThumbnail('overlay', state.overlay.image);
   btnBwBase.classList.toggle('active', state.base.bw);
@@ -518,26 +547,44 @@ function setupCanvasGestures() {
 function handleFileUpload(e, layerKey) {
   const file = e.target.files[0];
   if (!file) return;
+  loadCustomFile(file, layerKey);
+  e.target.value = '';
+}
 
+// Universal File Loader (File input + Drag & Drop)
+function loadCustomFile(file, layerKey) {
   const reader = new FileReader();
   reader.onload = (event) => {
     const img = new Image();
     img.onload = () => {
       state[layerKey].image = img;
       state[layerKey].name = file.name.replace(/\.[^/.]+$/, '');
+
       if (layerKey === 'base') {
         nameBase.textContent = state.base.name;
+        if (btnLabelBase) btnLabelBase.textContent = 'Cambiar Foto 1';
+        if (previewRowBase) previewRowBase.style.display = 'flex';
         updateThumbnail('base', img);
       } else {
         nameOverlay.textContent = state.overlay.name;
+        if (btnLabelOverlay) btnLabelOverlay.textContent = 'Cambiar Foto 2';
+        if (previewRowOverlay) previewRowOverlay.style.display = 'flex';
         updateThumbnail('overlay', img);
       }
+
       if (state.ratio === 'free' && layerKey === 'base') {
         setRatio('free');
       } else {
         centerLayer(layerKey);
         updateCanvasDisplaySize();
         render();
+      }
+
+      // Automatically switch active layer to overlay if base already exists
+      if (layerKey === 'overlay') {
+        setActiveLayer('overlay');
+      } else if (!state.overlay.image) {
+        setActiveLayer('base');
       }
     };
     img.src = event.target.result;
@@ -637,8 +684,6 @@ function remix() {
 
 // Render Engine (Canvas 2D + Hardware Acceleration)
 function render() {
-  if (!state.base.image) return;
-
   const w = state.canvasWidth;
   const h = state.canvasHeight;
   canvas.width = w;
@@ -646,16 +691,33 @@ function render() {
 
   ctx.clearRect(0, 0, w, h);
 
+  const hasBase = !!state.base.image;
+  const hasOverlay = !!state.overlay.image;
+
+  if (!hasBase && !hasOverlay) {
+    if (emptyDropzone) emptyDropzone.classList.remove('hidden');
+    return;
+  }
+
+  if (emptyDropzone) emptyDropzone.classList.add('hidden');
+
   // 1. Draw Base Layer
-  ctx.save();
-  drawLayer(state.base, false);
-  ctx.restore();
+  if (hasBase) {
+    ctx.save();
+    drawLayer(state.base, false);
+    ctx.restore();
+  }
 
   // 2. Draw Overlay Layer with Selected Blend Mode
-  if (state.overlay.image) {
+  if (hasOverlay) {
     ctx.save();
-    ctx.globalCompositeOperation = state.blendMode;
-    ctx.globalAlpha = state.opacity;
+    if (hasBase) {
+      ctx.globalCompositeOperation = state.blendMode;
+      ctx.globalAlpha = state.opacity;
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha = 1.0;
+    }
     drawLayer(state.overlay, true);
     ctx.restore();
   }
@@ -773,270 +835,14 @@ function applyGrain(w, h) {
 
 // Export high resolution JPG
 function exportImage() {
+  if (!state.base.image && !state.overlay.image) {
+    alert('Primero subí al menos una fotografía para exportar tu creación.');
+    return;
+  }
   const link = document.createElement('a');
   link.download = `rk_doble_exposicion_${state.ratio.replace(':', 'x')}_${Date.now()}.jpg`;
   link.href = canvas.toDataURL('image/jpeg', 0.95);
   link.click();
-}
-
-// Procedural High Quality Demo Images (100% offline, zero network lag)
-function loadDemo(demoKey) {
-  if (demoKey === 'forest') {
-    state.base.name = 'Silueta de Perfil';
-    state.overlay.name = 'Bosque con Niebla';
-    state.base.image = createSilhouetteDemo();
-    state.overlay.image = createForestDemo();
-    state.blendMode = 'screen';
-  } else if (demoKey === 'neon') {
-    state.base.name = 'Retrato Contraluz';
-    state.overlay.name = 'Luces Neón / Ciudad';
-    state.base.image = createSilhouetteDemo();
-    state.overlay.image = createNeonDemo();
-    state.blendMode = 'screen';
-  } else if (demoKey === 'flowers') {
-    state.base.name = 'Manos / Escultura';
-    state.overlay.name = 'Jardín Botánico';
-    state.base.image = createSculptureDemo();
-    state.overlay.image = createFlowersDemo();
-    state.blendMode = 'screen';
-  }
-
-  nameBase.textContent = state.base.name;
-  nameOverlay.textContent = state.overlay.name;
-  updateThumbnail('base', state.base.image);
-  updateThumbnail('overlay', state.overlay.image);
-
-  blendBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.blend === state.blendMode));
-  setRatio(state.ratio);
-  resetTransforms();
-}
-
-// Generator: Clean Human Profile Silhouette Demo
-function createSilhouetteDemo() {
-  const c = document.createElement('canvas');
-  c.width = 1080;
-  c.height = 1350;
-  const cx = c.getContext('2d');
-
-  // Solid dark background with slight top vignette
-  cx.fillStyle = '#060606';
-  cx.fillRect(0, 0, 1080, 1350);
-
-  // Soft rim light gradient
-  const rim = cx.createRadialGradient(720, 600, 100, 720, 600, 650);
-  rim.addColorStop(0, 'rgba(80, 80, 90, 0.45)');
-  rim.addColorStop(1, 'rgba(0, 0, 0, 0)');
-  cx.fillStyle = rim;
-  cx.fillRect(0, 0, 1080, 1350);
-
-  // Stylized profile silhouette
-  cx.fillStyle = '#000000';
-  cx.beginPath();
-  // Head & shoulders curve
-  cx.moveTo(200, 1350);
-  cx.bezierCurveTo(240, 1000, 360, 850, 480, 800); // Back shoulder
-  cx.bezierCurveTo(460, 700, 470, 520, 560, 420); // Neck & head back
-  cx.bezierCurveTo(620, 320, 740, 320, 800, 400); // Crown & forehead
-  cx.bezierCurveTo(840, 460, 880, 490, 890, 530); // Nose bridge
-  cx.lineTo(920, 540);                           // Nose tip
-  cx.bezierCurveTo(880, 560, 880, 600, 890, 620); // Lips & chin
-  cx.bezierCurveTo(860, 700, 760, 760, 740, 850); // Jaw & neck
-  cx.bezierCurveTo(850, 950, 980, 1100, 1080, 1350); // Chest & front
-  cx.closePath();
-  cx.fill();
-
-  // Subtle interior contour shadow for depth
-  const grad = cx.createLinearGradient(400, 300, 900, 1000);
-  grad.addColorStop(0, '#000000');
-  grad.addColorStop(1, '#050508');
-  cx.fillStyle = grad;
-  cx.fill();
-
-  const img = new Image();
-  img.src = c.toDataURL();
-  return img;
-}
-
-// Generator: Misty Pine Forest & Branches Demo
-function createForestDemo() {
-  const c = document.createElement('canvas');
-  c.width = 1080;
-  c.height = 1350;
-  const cx = c.getContext('2d');
-
-  // Misty blue-green dusk sky
-  const sky = cx.createLinearGradient(0, 0, 0, 1350);
-  sky.addColorStop(0, '#10222e');
-  sky.addColorStop(0.5, '#2b4754');
-  sky.addColorStop(1, '#a8c6ce');
-  cx.fillStyle = sky;
-  cx.fillRect(0, 0, 1080, 1350);
-
-  // Soft atmospheric mist
-  for (let m = 0; m < 5; m++) {
-    const mist = cx.createRadialGradient(540, 800 + m * 80, 100, 540, 800 + m * 80, 600);
-    mist.addColorStop(0, 'rgba(230, 245, 250, 0.25)');
-    mist.addColorStop(1, 'rgba(0,0,0,0)');
-    cx.fillStyle = mist;
-    cx.fillRect(0, 0, 1080, 1350);
-  }
-
-  // Draw layers of pine trees and branches
-  const drawTree = (x, y, h, width, color) => {
-    cx.fillStyle = color;
-    cx.beginPath();
-    cx.moveTo(x, y - h);
-    cx.lineTo(x + width, y);
-    cx.lineTo(x - width, y);
-    cx.closePath();
-    cx.fill();
-    // Trunk
-    cx.fillRect(x - 4, y, 8, 30);
-  };
-
-  // Background trees
-  for (let i = 0; i < 18; i++) {
-    drawTree(60 * i, 900 + (i % 3) * 30, 220 + (i % 5) * 30, 45, '#1e3842');
-  }
-
-  // Foreground trees
-  for (let i = 0; i < 12; i++) {
-    drawTree(90 * i + 30, 1100 + (i % 4) * 25, 340 + (i % 3) * 50, 70, '#0c1a20');
-  }
-
-  // Organic fine branches in top corners
-  cx.strokeStyle = '#050c10';
-  cx.lineWidth = 3;
-  for (let b = 0; b < 10; b++) {
-    cx.beginPath();
-    cx.moveTo(100 + b * 90, 0);
-    cx.quadraticCurveTo(150 + b * 90, 150, 80 + b * 110, 300 + (b % 4) * 50);
-    cx.stroke();
-  }
-
-  const img = new Image();
-  img.src = c.toDataURL();
-  return img;
-}
-
-// Generator: Night City Lights & Bokeh Demo
-function createNeonDemo() {
-  const c = document.createElement('canvas');
-  c.width = 1080;
-  c.height = 1350;
-  const cx = c.getContext('2d');
-
-  // Deep midnight blue
-  cx.fillStyle = '#050714';
-  cx.fillRect(0, 0, 1080, 1350);
-
-  // Soft luminous bokeh circles
-  const colors = [
-    'rgba(255, 107, 107, 0.65)',
-    'rgba(78, 205, 196, 0.60)',
-    'rgba(255, 230, 109, 0.70)',
-    'rgba(199, 125, 255, 0.65)',
-    'rgba(88, 166, 255, 0.70)'
-  ];
-
-  for (let i = 0; i < 60; i++) {
-    const bx = Math.random() * 1080;
-    const by = Math.random() * 1350;
-    const r = 25 + Math.random() * 85;
-    const col = colors[i % colors.length];
-
-    const grad = cx.createRadialGradient(bx, by, r * 0.1, bx, by, r);
-    grad.addColorStop(0, '#ffffff');
-    grad.addColorStop(0.35, col);
-    grad.addColorStop(1, 'rgba(0,0,0,0)');
-    cx.fillStyle = grad;
-    cx.beginPath();
-    cx.arc(bx, by, r, 0, Math.PI * 2);
-    cx.fill();
-  }
-
-  const img = new Image();
-  img.src = c.toDataURL();
-  return img;
-}
-
-// Generator: Classical Sculpture Silhouette Demo
-function createSculptureDemo() {
-  const c = document.createElement('canvas');
-  c.width = 1080;
-  c.height = 1350;
-  const cx = c.getContext('2d');
-
-  cx.fillStyle = '#080808';
-  cx.fillRect(0, 0, 1080, 1350);
-
-  // Dramatic studio spotlight on background
-  const spot = cx.createRadialGradient(540, 600, 50, 540, 600, 550);
-  spot.addColorStop(0, 'rgba(120, 110, 100, 0.4)');
-  spot.addColorStop(1, 'rgba(0, 0, 0, 0)');
-  cx.fillStyle = spot;
-  cx.fillRect(0, 0, 1080, 1350);
-
-  // Marble bust / hands silhouette
-  cx.fillStyle = '#020202';
-  cx.beginPath();
-  cx.arc(540, 520, 240, 0, Math.PI * 2); // Head
-  cx.rect(340, 720, 400, 630);           // Torso
-  cx.fill();
-
-  const img = new Image();
-  img.src = c.toDataURL();
-  return img;
-}
-
-// Generator: Flowers & Botanical Demo
-function createFlowersDemo() {
-  const c = document.createElement('canvas');
-  c.width = 1080;
-  c.height = 1350;
-  const cx = c.getContext('2d');
-
-  // Warm ambient botanical garden
-  const bg = cx.createLinearGradient(0, 0, 1080, 1350);
-  bg.addColorStop(0, '#1c281e');
-  bg.addColorStop(0.6, '#3a503c');
-  bg.addColorStop(1, '#8fa89b');
-  cx.fillStyle = bg;
-  cx.fillRect(0, 0, 1080, 1350);
-
-  // Render lush flowers and leaves
-  const petalColors = ['#ff85a2', '#ffc2d1', '#fbb1bd', '#ffffff', '#ffd166'];
-  for (let f = 0; f < 35; f++) {
-    const fx = (f * 137.5) % 1080;
-    const fy = 150 + ((f * 93) % 1100);
-    const rad = 25 + (f % 5) * 10;
-    const col = petalColors[f % petalColors.length];
-
-    for (let p = 0; p < 6; p++) {
-      const angle = (p * Math.PI) / 3;
-      cx.fillStyle = col;
-      cx.beginPath();
-      cx.ellipse(
-        fx + Math.cos(angle) * rad,
-        fy + Math.sin(angle) * rad,
-        rad * 0.9,
-        rad * 0.45,
-        angle,
-        0,
-        Math.PI * 2
-      );
-      cx.fill();
-    }
-    // Flower center
-    cx.fillStyle = '#ffb703';
-    cx.beginPath();
-    cx.arc(fx, fy, rad * 0.35, 0, Math.PI * 2);
-    cx.fill();
-  }
-
-  const img = new Image();
-  img.src = c.toDataURL();
-  return img;
 }
 
 // Start application
