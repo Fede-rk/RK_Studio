@@ -101,9 +101,12 @@ function updateCanvasDisplaySize() {
   if (!rect || rect.width <= 0 || rect.height <= 0) return;
 
   const isMobile = window.innerWidth <= 960;
-  const pad = isMobile ? 12 : 28;
-  const maxW = Math.max(80, rect.width - pad * 2);
-  const maxH = Math.max(80, rect.height - pad * 2);
+  // Use generous padding so the frame has ample breathing space
+  // On desktop: 56px vertically to stay well clear of toolbar and bottom tips
+  const padX = isMobile ? 12 : 36;
+  const padY = isMobile ? 12 : 56;
+  const maxW = Math.max(80, rect.width - padX * 2);
+  const maxH = Math.max(80, rect.height - padY * 2);
 
   const dstRatio = state.canvasWidth / state.canvasHeight;
   let fw, fh;
@@ -278,6 +281,12 @@ function setRatio(ratioKey) {
   } else if (ratioKey === '9:16') {
     state.canvasWidth = 1080;
     state.canvasHeight = 1920;
+  } else if (ratioKey === '16:9') {
+    state.canvasWidth = 1920;
+    state.canvasHeight = 1080;
+  } else if (ratioKey === '3:2') {
+    state.canvasWidth = 1620;
+    state.canvasHeight = 1080;
   } else if (ratioKey === 'free') {
     if (state.base.image) {
       const img = state.base.image;
@@ -288,6 +297,11 @@ function setRatio(ratioKey) {
   }
   canvas.width = state.canvasWidth;
   canvas.height = state.canvasHeight;
+
+  // Re-fit layers to new aspect ratio dimensions
+  centerLayer('base');
+  centerLayer('overlay');
+
   updateCanvasDisplaySize();
   render();
 }
