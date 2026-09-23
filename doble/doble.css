@@ -25,6 +25,12 @@
   padding: 0;
 }
 
+html, body {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background: var(--bg);
@@ -34,6 +40,13 @@ body {
   flex-direction: column;
   line-height: 1.5;
   overflow-x: hidden;
+}
+
+.btn-text-full {
+  display: inline;
+}
+.btn-text-short {
+  display: none;
 }
 
 /* Header */
@@ -452,9 +465,10 @@ header {
   justify-content: center;
   position: relative;
   overflow: hidden;
-  padding: 20px;
+  padding: 24px;
   cursor: grab;
   user-select: none;
+  touch-action: none; /* Stops page scroll & zoom while gesturing on canvas */
 }
 .canvas-viewport.dragging {
   cursor: grabbing;
@@ -463,17 +477,24 @@ header {
 .canvas-frame-wrap {
   position: relative;
   box-shadow: 0 16px 50px rgba(0,0,0,0.85);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 6px;
   background: #000;
   overflow: hidden;
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: width 0.2s cubic-bezier(0.2, 0, 0.2, 1), height 0.2s cubic-bezier(0.2, 0, 0.2, 1);
 }
 
 #double-canvas {
+  width: 100% !important;
+  height: 100% !important;
   display: block;
-  max-width: 100%;
-  max-height: 100%;
   object-fit: contain;
+  pointer-events: none;
 }
 
 /* Floating Gesture Tips */
@@ -493,6 +514,7 @@ header {
   align-items: center;
   gap: 12px;
   pointer-events: none;
+  z-index: 10;
 }
 .gesture-tips-overlay span strong {
   color: var(--accent);
@@ -515,23 +537,141 @@ header {
   align-items: center;
   gap: 6px;
   pointer-events: none;
+  z-index: 10;
 }
 
-/* Responsive */
+/* Responsive: Mobile Optimization */
 @media (max-width: 960px) {
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  .hide-mobile {
+    display: none !important;
+  }
+  .btn-text-full {
+    display: none !important;
+  }
+  .btn-text-short {
+    display: inline !important;
+  }
+
+  header {
+    height: 50px;
+    padding: 0 10px;
+    gap: 6px;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  .logo {
+    font-size: 13px;
+  }
+
+  .header-actions {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .header-actions .btn {
+    padding: 4px 7px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
   .app-layout {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
+    display: flex;
+    flex-direction: column;
     height: auto;
-    overflow: visible;
+    min-height: calc(100vh - 50px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 100%;
+    max-width: 100vw;
   }
-  .sidebar {
-    height: auto;
-    max-height: 480px;
-    border-right: none;
+
+  .workspace-area {
+    order: 1; /* Keep canvas on top on mobile */
+    position: sticky;
+    top: 50px;
+    z-index: 40;
+    height: 48vh;
+    min-height: 280px;
+    max-height: 440px;
     border-bottom: 1px solid var(--border);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    width: 100%;
+    max-width: 100vw;
+    overflow: hidden;
   }
+
+  .workspace-toolbar {
+    height: 40px;
+    padding: 0 8px;
+    gap: 6px;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    max-width: 100vw;
+    justify-content: flex-start;
+  }
+  .workspace-toolbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .workspace-toolbar .pill-btn,
+  .workspace-toolbar .btn {
+    padding: 3px 7px;
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+
+  .ratio-pills, .active-layer-pills, .toolbar-quick-actions {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
   .canvas-viewport {
-    min-height: 420px;
+    padding: 10px;
+    height: calc(100% - 40px);
+    touch-action: none;
+    overflow: hidden;
+  }
+
+  .canvas-frame-wrap {
+    touch-action: none;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .sidebar {
+    order: 2; /* Controls below canvas on mobile */
+    height: auto;
+    overflow-y: visible;
+    padding: 16px;
+    padding-bottom: 80px;
+    border-right: none;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  .gesture-tips-overlay {
+    bottom: 8px;
+    font-size: 10px;
+    padding: 4px 10px;
+    gap: 6px;
+  }
+
+  .layer-indicator-badge {
+    top: 8px;
+    left: 8px;
+    font-size: 10px;
+    padding: 3px 8px;
   }
 }

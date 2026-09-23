@@ -13,22 +13,25 @@
   <header>
     <div class="logo-group">
       <a href="/" class="btn btn-ghost btn-sm" title="Volver al inicio de RK Studio">← RK Studio</a>
-      <div class="logo">RK <span>Doble Exposición</span></div>
+      <div class="logo">RK <span>Doble<span class="hide-mobile"> Exposición</span></span></div>
     </div>
 
     <div class="header-actions">
       <button id="btn-magic" class="btn btn-magic btn-sm" title="Analiza las fotos y compone automáticamente la mejor fusión">
-        ✨ Auto-Componer
+        <span class="btn-text-full">✨ Auto-Componer</span>
+        <span class="btn-text-short">✨ Auto</span>
       </button>
       <button id="btn-remix" class="btn btn-ghost btn-sm" title="Prueba una propuesta artística distinta con 1 clic">
-        🎲 Re-mezclar
+        <span class="btn-text-full">🎲 Re-mezclar</span>
+        <span class="btn-text-short">🎲 Remix</span>
       </button>
       <button id="btn-reset" class="btn btn-ghost btn-sm" title="Reiniciar posiciones y ajustes">
         ↺ Reset
       </button>
       <button id="btn-export" class="btn btn-primary btn-sm" title="Descargar imagen fusionada en alta resolución">
         <svg viewBox="0 0 20 20" fill="currentColor" width="13" height="13"><path d="M10 17a1 1 0 01-.707-.293l-3-3a1 1 0 011.414-1.414L9 13.586V7a1 1 0 112 0v6.586l1.293-1.293a1 1 0 011.414 1.414l-3 3A1 1 0 0110 17z"/><path d="M3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg>
-        Exportar JPG
+        <span class="btn-text-full">Exportar JPG</span>
+        <span class="btn-text-short">Exportar</span>
       </button>
     </div>
   </header>
@@ -220,23 +223,23 @@
       <div class="workspace-toolbar">
         <!-- Selector de capa a manipular -->
         <div class="active-layer-pills">
-          <span style="font-size: 11px; color: var(--text-muted); margin-right: 4px;">Mover con mouse/touch:</span>
-          <button id="pill-select-base" class="pill-btn">👤 Capa Base</button>
-          <button id="pill-select-overlay" class="pill-btn active">🌿 Capa Textura</button>
+          <span class="hide-mobile" style="font-size: 11px; color: var(--text-muted); margin-right: 2px;">Mover:</span>
+          <button id="pill-select-base" class="pill-btn">👤 <span class="hide-mobile">Capa </span>Base</button>
+          <button id="pill-select-overlay" class="pill-btn active">🌿 <span class="hide-mobile">Capa </span>Textura</button>
         </div>
 
         <!-- Selector de proporción para redes -->
         <div class="ratio-pills">
-          <button class="pill-btn ratio-btn active" data-ratio="4:5" title="Vertical clásico de Instagram (1080×1350)">4:5 (IG)</button>
+          <button class="pill-btn ratio-btn active" data-ratio="4:5" title="Vertical clásico de Instagram (1080×1350)">4:5</button>
           <button class="pill-btn ratio-btn" data-ratio="1:1" title="Cuadrado (1080×1080)">1:1</button>
-          <button class="pill-btn ratio-btn" data-ratio="9:16" title="Vertical Stories / Reels (1080×1920)">9:16 Story</button>
-          <button class="pill-btn ratio-btn" data-ratio="free" title="Proporción libre según foto base">Original</button>
+          <button class="pill-btn ratio-btn" data-ratio="9:16" title="Vertical Stories / Reels (1080×1920)">9:16</button>
+          <button class="pill-btn ratio-btn" data-ratio="free" title="Proporción libre según foto base">Orig.</button>
         </div>
 
         <!-- Quick actions -->
-        <div style="display: flex; gap: 6px;">
-          <button id="btn-center-layer" class="btn btn-ghost btn-sm" title="Centrar y ajustar capa seleccionada">🎯 Centrar</button>
-          <button id="btn-flip-layer" class="btn btn-ghost btn-sm" title="Espejar horizontalmente la capa seleccionada">⇄ Espejar</button>
+        <div class="toolbar-quick-actions" style="display: flex; gap: 4px;">
+          <button id="btn-center-layer" class="btn btn-ghost btn-sm" title="Centrar y ajustar capa seleccionada">🎯<span class="hide-mobile"> Centrar</span></button>
+          <button id="btn-flip-layer" class="btn btn-ghost btn-sm" title="Espejar horizontalmente la capa seleccionada">⇄<span class="hide-mobile"> Espejar</span></button>
         </div>
       </div>
 

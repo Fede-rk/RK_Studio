@@ -40,6 +40,7 @@ const state = {
 const canvas = document.getElementById('double-canvas');
 const ctx = canvas.getContext('2d');
 const canvasViewport = document.getElementById('canvas-viewport');
+const canvasFrameWrap = document.getElementById('canvas-frame-wrap');
 const layerIndicator = document.getElementById('layer-indicator');
 
 // Layer slots & Thumbs
@@ -93,10 +94,50 @@ let startX = 0;
 let startY = 0;
 let touchStartDist = 0;
 
+// Dynamic Responsive Canvas Size calculation
+function updateCanvasDisplaySize() {
+  if (!canvasViewport || !canvasFrameWrap) return;
+  const rect = canvasViewport.getBoundingClientRect();
+  if (!rect || rect.width <= 0 || rect.height <= 0) return;
+
+  const isMobile = window.innerWidth <= 960;
+  const pad = isMobile ? 12 : 28;
+  const maxW = Math.max(80, rect.width - pad * 2);
+  const maxH = Math.max(80, rect.height - pad * 2);
+
+  const dstRatio = state.canvasWidth / state.canvasHeight;
+  let fw, fh;
+  if (maxW / maxH > dstRatio) {
+    fh = maxH;
+    fw = fh * dstRatio;
+  } else {
+    fw = maxW;
+    fh = fw / dstRatio;
+  }
+  fw = Math.round(fw);
+  fh = Math.round(fh);
+
+  canvasFrameWrap.style.width = `${fw}px`;
+  canvasFrameWrap.style.height = `${fh}px`;
+}
+
 // Initialize
 function init() {
   setupEventListeners();
   loadDemo('forest');
+
+  // Responsive window resize listener
+  window.addEventListener('resize', () => {
+    updateCanvasDisplaySize();
+    render();
+  });
+
+  // Calculate size immediately and on next frame
+  updateCanvasDisplaySize();
+  requestAnimationFrame(() => {
+    updateCanvasDisplaySize();
+    render();
+  });
 }
 
 // Setup Event Listeners
@@ -247,6 +288,7 @@ function setRatio(ratioKey) {
   }
   canvas.width = state.canvasWidth;
   canvas.height = state.canvasHeight;
+  updateCanvasDisplaySize();
   render();
 }
 
@@ -332,6 +374,8 @@ function centerLayer(layerKey) {
 function setupCanvasGestures() {
   // Mouse Drag
   canvasViewport.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return; // Only left click
+    e.preventDefault();
     isDragging = true;
     startX = e.clientX;
     startY = e.clientY;
@@ -346,9 +390,9 @@ function setupCanvasGestures() {
     startY = e.clientY;
 
     const layer = state[state.activeLayer];
-    // Scale delta relative to canvas display size
-    const rect = canvas.getBoundingClientRect();
-    const scaleRatio = state.canvasWidth / rect.width;
+    // Scale delta relative to actual rendered frame wrapper size
+    const rect = canvasFrameWrap.getBoundingClientRect();
+    const scaleRatio = (rect && rect.width > 0) ? (state.canvasWidth / rect.width) : 1;
 
     layer.x += dx * scaleRatio;
     layer.y += dy * scaleRatio;
@@ -372,16 +416,22 @@ function setupCanvasGestures() {
   }, { passive: false });
 
   // Double Click to Center Active Layer
-  canvasViewport.addEventListener('dblclick', () => {
+  canvasViewport.addEventListener('dblclick', (e) => {
+    e.preventDefault();
     centerActiveLayer();
   });
 
   // Touch Drag & Pinch
+  let lastTapTime = 0;
+
   canvasViewport.addEventListener('touchstart', (e) => {
+    if (e.cancelable) e.preventDefault();
+
     if (e.touches.length === 1) {
       isDragging = true;
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
+      touchStartDist = 0;
     } else if (e.touches.length === 2) {
       isDragging = false;
       touchStartDist = Math.hypot(
@@ -389,9 +439,12 @@ function setupCanvasGestures() {
         e.touches[0].clientY - e.touches[1].clientY
       );
     }
-  }, { passive: true });
+  }, { passive: false });
 
   canvasViewport.addEventListener('touchmove', (e) => {
+    // CRITICAL: Prevent default to stop mobile browser from scrolling the web page
+    if (e.cancelable) e.preventDefault();
+
     if (e.touches.length === 1 && isDragging) {
       const dx = e.touches[0].clientX - startX;
       const dy = e.touches[0].clientY - startY;
@@ -399,8 +452,8 @@ function setupCanvasGestures() {
       startY = e.touches[0].clientY;
 
       const layer = state[state.activeLayer];
-      const rect = canvas.getBoundingClientRect();
-      const scaleRatio = state.canvasWidth / rect.width;
+      const rect = canvasFrameWrap.getBoundingClientRect();
+      const scaleRatio = (rect && rect.width > 0) ? (state.canvasWidth / rect.width) : 1;
 
       layer.x += dx * scaleRatio;
       layer.y += dy * scaleRatio;
@@ -418,9 +471,30 @@ function setupCanvasGestures() {
         render();
       }
     }
-  }, { passive: true });
+  }, { passive: false });
 
-  canvasViewport.addEventListener('touchend', () => {
+  canvasViewport.addEventListener('touchend', (e) => {
+    if (e.touches.length === 0) {
+      // Double tap detection on mobile
+      const now = Date.now();
+      if (now - lastTapTime < 320) {
+        centerActiveLayer();
+        lastTapTime = 0;
+      } else {
+        lastTapTime = now;
+      }
+      isDragging = false;
+      touchStartDist = 0;
+    } else if (e.touches.length === 1) {
+      // Transition from pinch back to single finger
+      isDragging = true;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      touchStartDist = 0;
+    }
+  });
+
+  canvasViewport.addEventListener('touchcancel', () => {
     isDragging = false;
     touchStartDist = 0;
   });
@@ -444,8 +518,13 @@ function handleFileUpload(e, layerKey) {
         nameOverlay.textContent = state.overlay.name;
         updateThumbnail('overlay', img);
       }
-      centerLayer(layerKey);
-      render();
+      if (state.ratio === 'free' && layerKey === 'base') {
+        setRatio('free');
+      } else {
+        centerLayer(layerKey);
+        updateCanvasDisplaySize();
+        render();
+      }
     };
     img.src = event.target.result;
   };
